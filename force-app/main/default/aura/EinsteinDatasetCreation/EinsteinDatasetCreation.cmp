@@ -45,5 +45,8 @@
 		</lightning:card>
 	</div>
 
+      <aura:if isTrue="{! v.dataType == 'text-intent'}">
+              <c:EinsteinLanguageModelBuilder />
+        </aura:if>
 
 </aura:component>

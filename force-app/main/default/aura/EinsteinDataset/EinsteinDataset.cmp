@@ -43,7 +43,7 @@
                 </ul>
             </aura:set>
 
-            <lightning:tabset>
+            <lightning:tabset >
                 <lightning:tab onactive="{!c.onLabelsTab}">
                     <aura:set attribute="label">
                         Labels <lightning:badge class="slds-badge_inverse" label="{!v.dataset.labelSummary.labels.length}" />

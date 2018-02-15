@@ -9,7 +9,7 @@
 
 	<div>
 
-		<lightning:tabset>
+		<lightning:tabset >
 			<lightning:tab label="1. Datasets and Models">
 				<c:EinsteinDataAndTraining dataType="{!v.dataType}" />
 			</lightning:tab>

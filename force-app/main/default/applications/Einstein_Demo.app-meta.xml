@@ -2,13 +2,13 @@
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
     <brand>
         <headerColor>#0070D2</headerColor>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
     <formFactors>Large</formFactors>
     <label>Einstein Platform</label>
     <navType>Standard</navType>
-    <tab>Playground</tab>
-    <tab>Einstein_Usage</tab>
-    <tab>Language_Model_Builder</tab>
+    <tabs>Playground</tabs>
+    <tabs>Einstein_Usage</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Einstein_Demo_UtilityBar</utilityBar>
 </CustomApplication>

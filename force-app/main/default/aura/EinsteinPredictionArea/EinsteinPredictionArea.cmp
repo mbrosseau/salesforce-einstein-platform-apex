@@ -93,7 +93,12 @@
 			</lightning:tabset>
 		</lightning:layoutitem>
 	</lightning:layout>
-
+	 <aura:if isTrue="{!v.dataType == 'text-sentiment'}">
+              <c:EinsteinLanguageMassUpdate modelId="CommunitySentiment" />
+        </aura:if>
+        <aura:if isTrue="{! v.dataType == 'text-intent'}">
+              <c:EinsteinLanguageMassUpdate modelId="{!v.dataType}" />
+        </aura:if>
 
 
 </aura:component>
