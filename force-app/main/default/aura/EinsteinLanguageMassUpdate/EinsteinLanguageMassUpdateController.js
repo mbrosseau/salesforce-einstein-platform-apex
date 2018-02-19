@@ -79,7 +79,7 @@
    		});
     	$A.enqueueAction(action);
         
-            var action2 = component.get("c.getObjectCount");	
+        var action2 = component.get("c.getObjectCount");	
     	action2.setParams({
 			"objectName" : objName
 		});

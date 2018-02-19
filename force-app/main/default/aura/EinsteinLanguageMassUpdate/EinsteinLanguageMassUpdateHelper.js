@@ -9,7 +9,13 @@
               return;
          }
          
-         var modelId = component.get("v.modelId");
+         var modelId = component.get("v.selectedModel");
+         var datasetId = component.get("v.datasetId");
+         
+         if(modelId == null && datasetId == 'CommunitySentiment') {
+             modelId = 'CommunitySentiment';
+         }
+         
          var sourceName = component.get("v.selectedSourceField");
          var destinationName = component.get("v.selectedDestinationField");
          var objectName = component.get("v.selectedObject");
@@ -31,7 +37,7 @@
     	action.setCallback(this, function(a) {
             if (a.getState() === "SUCCESS") {
                      
-              startPos = endPos;
+                startPos = endPos;
  
                 var objectCount = component.get("v.objectCount");
                 var objectsCompleted;
@@ -44,7 +50,6 @@
                 
                  component.set("v.objectsCompleted", objectsCompleted);
                  component.set("v.progressPercent", progressPercent);
-                
                 
                 helper.getIntent(component, event, startPos, controller);
                 

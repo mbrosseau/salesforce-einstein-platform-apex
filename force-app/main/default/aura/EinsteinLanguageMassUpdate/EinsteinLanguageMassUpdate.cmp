@@ -4,8 +4,9 @@
     <aura:attribute name="datasetList" type="object[]"/>
     <aura:attribute name="datasetId" type="string" default=""/>
     
-     <aura:attribute name="modelList" type="object[]"/>
+    <aura:attribute name="modelList" type="object[]"/>
     <aura:attribute name="modelId" type="string"/>
+     <aura:attribute name="selectedModel" type="string"/>
     
     <aura:attribute name="objects" type="object[]"/>
 	<aura:attribute name="selectedObject" type="string"/>
@@ -17,13 +18,14 @@
     
     <aura:attribute name="objectCount" type="Integer" default="0"/>
     <aura:attribute name="objectsCompleted" type="Integer" default="0"/>
-     <aura:attribute name="progressPercent" type="Integer" default="0"/>
+    <aura:attribute name="progressPercent" type="Integer" default="0"/>
     
-      <aura:attribute name="iconName" type="string"/>
+    <aura:attribute name="iconName" type="string"/>
 
 	<ltng:require scripts="{!$Resource.lodash}" afterScriptsLoaded="{!c.doInit}"/>
 
 <c:LightningErrorHandler aura:id="leh"/> 
+   
 	<aura:if isTrue="{!!v.fieldsv.Einstein_Dataset_Id__c}">
  <div class="slds-card">
 		<lightning:card title="Mass Update" iconName="utility:signpost" variant="base" >
@@ -41,7 +43,7 @@
         
                 <aura:if isTrue="{!and( v.datasetId != 'CommunitySentiment', v.datasetId != '')}">
                 <div class="slds-m-bottom--medium">
-					<lightning:select label="Select a source Model" value="{!v.modelId}" >
+					<lightning:select label="Select a source Model" value="{!v.selectedModel}" >
 						<option text="-- Select --" value=""/>
 						<aura:iteration items="{!v.modelList}" var="object">
 							<option value="{!object.modelId}" text="{!object.modelId}"/>

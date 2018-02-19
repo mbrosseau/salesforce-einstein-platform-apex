@@ -17,6 +17,7 @@
     <aura:attribute name="attachId" type="String" default=""/>
     <aura:attribute name="fileData" type="String"/>
   	<aura:attribute name="modelName" type="String"/>
+   	<aura:attribute name="selectedModel" type="String"/>
     <aura:attribute name="alignHorizontal" type="Boolean" default="false"/>
     <aura:attribute name="title" type="string" default="Einstein Vision"/>
     
@@ -72,29 +73,42 @@
                 <lightning:layoutItem flexibility="auto" size="5">
                     <div class="slds-tile slds-p-left_small">
                         <div class="slds-tile__detail slds-text-body--small">
+                            <aura:if isTrue="{!or(v.selectedModel == '', v.selectedModel == null)}">
                             <ui:inputSelect aura:id="levels" label="Classifier Name:" change="{!c.onSelectChange}">
-                                <ui:inputSelectOption text="GeneralImageClassifier" label="General Classifier"/>
+                                <aura:iteration items="{!v.model}" var="item">
+                                	<ui:inputSelectOption text="{!item.modelId}" label="{!item.name}"/>
+                              	</aura:iteration>
+                               <ui:inputSelectOption text="GeneralImageClassifier" label="General Classifier"/>
                                 <ui:inputSelectOption text="FoodImageClassifier" label="Food Classifier"/>
                                 <ui:inputSelectOption text="SceneClassifier" label="Scene Classifier"/>
                                 <ui:inputSelectOption text="MultiLabelImageClassifier" label="Multi Label Classifier"/>    
-                            	<aura:iteration items="{!v.model}" var="item">
-                                	<ui:inputSelectOption text="{!item.id}" label="{!item.name}"/>
-                              	</aura:iteration>
+                           
                             </ui:inputSelect>
-                            <dl class="slds-list--horizontal slds-wrap">
+                            </aura:if>
+                             <aura:if isTrue="{!v.probability > 0}">
+                        <dl class="slds-list--horizontal slds-wrap">
                                 <dt class="slds-item--label slds-text-color--weak slds-p-top_small slds-truncate_container_75" title="First Label">Category:</dt>
-                                <dd class="slds-item--detail slds-p-top_small">{!v.prediction}</dd>
-                                <dt class="slds-item--label slds-text-color--weak slds-p-top_small slds-truncate_container_75" title="Second Label">Probability(%):</dt>
-                                <dd class="slds-item--detail slds-p-top_small">{!v.probability}</dd>
+                                <dd class="slds-item--detail slds-p-top_small"><div id="predictionId"></div>{!v.prediction}</dd>
+                                 
+                                <dt class="slds-item--label slds-text-color--weak slds-p-top_small slds-truncate_container_75" title="Second Label">Probability:</dt>
+                                <dd class="slds-item--detail slds-p-top_small">
+                                   
+                                	<div class="meter">
+                                      <span style="{!'width:' + v.meterWidth}"></span>
+                                    </div>
+                                </dd>
                             </dl>
+                            </aura:if>
                         </div>
                     </div>
                 </lightning:layoutItem>
             </lightning:layout>
         </div>
+             <aura:if isTrue="{!and(v.objectName != '', v.objectName != null)}">
         <div class="slds-card__footer">  
-          <lightning:button variant="brand" label="Save Prediction" onclick="{! c.handleClick }" />
+         <lightning:button variant="brand" label="Add Item" onclick="{! c.handleClick }" />
         </div>
+            </aura:if>
         </article>
     <aura:set attribute="else">
         <article class="slds-card slds-p-around_medium">
@@ -131,7 +145,7 @@
                     </div>
                     <div class="slds-tile slds-p-top_large">
                         <div class="slds-tile__detail slds-text-body--small">
-                            <aura:if isTrue="{!or(v.modelName == '', v.modelName == null)}">
+                            <aura:if isTrue="{!or(v.selectedModel == '', v.selectedModel == null)}">
 
                             <ui:inputSelect aura:id="levels" label="Classifier Name:" change="{!c.onSelectChange}">
                               
@@ -140,7 +154,7 @@
                                 <ui:inputSelectOption text="SceneClassifier" label="Scene Classifier"/>
                                 <ui:inputSelectOption text="MultiLabelImageClassifier" label="Multi Label Classifier"/>    
                             	<aura:iteration items="{!v.model}" var="item">
-                                	<ui:inputSelectOption text="{!item.id}" label="{!item.name}"/>
+                                	<ui:inputSelectOption text="{!item.modelId}" label="{!item.name}"/>
                               	</aura:iteration>
                             </ui:inputSelect>
                             </aura:if>
@@ -163,9 +177,11 @@
                 </lightning:layoutItem>
             </lightning:layout>
         </div>
+            <aura:if isTrue="{!and(v.objectName != '', v.objectName != null)}">
         <div class="slds-card__footer">  
           <lightning:button variant="brand" label="Add Item" onclick="{! c.handleClick }" />
         </div>
+            </aura:if>
         </article>
     </aura:set>
         

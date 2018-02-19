@@ -1,16 +1,30 @@
 public class EinsteinVisionController {
 
     @AuraEnabled
-    public static Einstein_Dataset[] getCustomModels()
+    public static Einstein_Model[] getCustomModels()
     {
        Einstein_PredictionService service = new Einstein_PredictionService(Einstein_PredictionService.Types.IMAGE);
        Einstein_Dataset[] datasetList = service.getDatasets();
-         if (service.httpStatusCode>200) {
+     
+        if (service.httpStatusCode>200) {
                 throw new AuraHandledException(service.httpErrorMessage);
             }
+       
+		 List<Einstein_Model> modelList = new  List<Einstein_Model>();
         
+        for(Einstein_Dataset dataset: datasetList) {
+            List<Einstein_Model> newModelList = service.getModels(dataset.id);
+            if (service.httpStatusCode>200) {
+                throw new AuraHandledException(service.httpErrorMessage);
+            }
+              for(Einstein_Model model: newModelList) {
+                  modelList.add(model);
+              }
+        }
+       
+        return modelList;
         
-        return datasetList;
+  
     }
     
     @AuraEnabled
@@ -57,13 +71,13 @@ public class EinsteinVisionController {
             Boolean isSalesforce =  item.Publisher.IsSalesforce;
             
              if((item.DataType.contains('Lookup') ||  item.DataType.contains('Master-Detail') ) && item.QualifiedApiName.contains(lookupObjectType)) {    
-            
               	lookupName = name;
+                 System.debug('Lookup field ' + lookupName );
                 sObj.put(lookupName, recordId);
                // break;
             }
         }
-
+			
         insert sObj;
     	return sObj.id;
     }

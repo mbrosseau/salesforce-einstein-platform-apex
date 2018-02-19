@@ -43,9 +43,12 @@
             <lightning:datatable data="{!v.shelfData}" keyField="label" columns="{!v.shelfDataColumns}" hideCheckboxColumn="true" />
             <br />
       <!--     <lightning:button label="Submit" onclick="{!c.store}" class="button-right"></lightning:button> -->
-          <div class="slds-card__footer">  
+         <aura:if isTrue="{!and(v.objectName != '', v.objectName != null)}">
+            <div class="slds-card__footer">  
+             
           <lightning:button variant="brand" label="Add Items" onclick="{! c.addItemstoRecords }" />
         </div>
+            </aura:if>
         </aura:if>
 
         <aura:if isTrue="{! v.spinnerWaiting }">

@@ -20,7 +20,7 @@ public class Einstein_JWT {
     
     public Einstein_JWT(String alg) {
         this.alg = alg;
-        this.validFor = 300;
+        this.validFor = 7300;
     }
     
     

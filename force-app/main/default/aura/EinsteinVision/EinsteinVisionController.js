@@ -1,7 +1,12 @@
 ({  
     onInit: function(component, event, helper) {
        
+        var selected = component.get("v.modelName");
+        component.set("v.selectedModel", selected);
+        
         helper.getModels(component);
+        
+        
         
         if(component.get("v.modelName") == '') {
             console.log("Empty Model");
@@ -38,7 +43,8 @@
     	component.set("v.modelName", selected);
         if (component.get("v.pictureSrc") != "https://s3-us-west-1.amazonaws.com/sfdc-demo/image-placeholder.png") {
             component.set("v.probability", "");
-            helper.analyseAgain(component)
+              var base64Data = component.get("v.fileData").match(/,(.*)$/)[1];
+            helper.analyseAgain(component, base64Data);
         }
   },
     onFileSelected : function(component,event,helper) {
@@ -53,6 +59,7 @@
             imgtag.src = event.target.result;
         };
         component.set("v.probability", "");
+      
         helper.readFile(component, helper, selectedFile);
         //reader.readAsDataURL(selectedFile);
 }

@@ -16,6 +16,7 @@ public class ObjectDetectionController {
     public static void storeScanResults(sObject dataJson, Id recordId, String objectName) {
         
         System.debug('------ Storing Results ----------');
+         System.debug('Record - ' + recordId);
          System.debug(dataJson);
    
         Schema.SObjectType token = recordId.getSObjectType();
@@ -35,7 +36,7 @@ public class ObjectDetectionController {
                 break;
             }
         }
-
+ 	  System.debug('Lookup - ' + lookupName + ' ' + lookupObjectType);
       dataJson.put(lookupName, recordId);
        
        insert dataJson; 

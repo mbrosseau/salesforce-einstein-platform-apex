@@ -104,7 +104,7 @@ public class EinsteinLanguageMassUpdateController {
                        
                        
                         if (service.httpStatusCode>200) {
-                            throw new AuraHandledException(service.httpErrorMessage);
+                            throw new AuraHandledException('API http error:' + service.httpErrorMessage);
                         }
                                     
                         for(Einstein_Probability pred : predictionList.probabilities) {

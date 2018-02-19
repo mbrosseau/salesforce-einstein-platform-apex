@@ -5,6 +5,7 @@
             var state = response.getState();
             if(state === 'SUCCESS') {
                 var returnValue = response.getReturnValue(); 
+              
                 component.set("v.model", returnValue);
             } else if(state === 'ERROR') {
                  var errors = action.getError();
@@ -53,15 +54,14 @@
 
         action.setCallback(this, function(response) {
             component.set("v.spinnerWaiting", false);
-            console.log("Callback called");
-            console.log("Model Name:" + c_type);
+
             var state = response.getState();
             var errors = action.getError();
             if(state === 'SUCCESS') {
              
-                var toastEvent = $A.get("e.force:showToast");
+              /*  var toastEvent = $A.get("e.force:showToast");
     			toastEvent.setParams({  "title": "Success!",  "message": "The record has been updated successfully."});
-   	 			toastEvent.fire();
+   	 			toastEvent.fire(); */
                 
                 var returnValue = response.getReturnValue();
           
@@ -92,8 +92,62 @@
         $A.enqueueAction(action); 
         component.set("v.prediction", "Getting prediction...");   
     },
-    
     analyseAgain: function(component, base64Data) {
+        component.set("v.spinnerWaiting", true);
+        
+       var fileName =  component.get("v.message");
+        var action = component.get("c.analyseImage"); 
+        var recId = component.get("v.recordId");
+        var c_type = component.get("v.modelName");
+        var keyContent = component.get("v.keyContent");
+        var email = component.get("v.einsteinAcctEmail");
+		var fileType = component.get("v.fileType");
+        
+        action.setParams({
+            recId : recId,
+            fileName: fileName,
+            base64Data: base64Data,
+            modelName: c_type,
+            contentType: fileType,
+            keyContent: keyContent,
+            email: email
+        });
+
+        action.setCallback(this, function(response) {
+            component.set("v.spinnerWaiting", false);
+
+            var state = response.getState();
+            var errors = action.getError();
+            if(state === 'SUCCESS') {
+             
+                var toastEvent = $A.get("e.force:showToast");
+    			toastEvent.setParams({  "title": "Success!",  "message": "The record has been updated successfully."});
+   	 			toastEvent.fire();
+                
+                var returnValue = response.getReturnValue();
+          
+             	var probabilities = returnValue.probabilities;
+
+                var meterWidth =  (probabilities[0].probability *100);
+                
+                component.set("v.prediction", probabilities[0].label);
+                component.set("v.probability", probabilities[0].probability);
+                component.set("v.meterWidth", meterWidth + '%');
+                component.set("v.fileName", returnValue.original_fileName);
+                component.set("v.attachId", returnValue.attachment_id);
+       
+        
+            } else if(state === 'ERROR') {
+            
+               $A.log("Errors", errors);
+                this.handleErrors(errors);
+            }
+        });
+        
+        $A.enqueueAction(action); 
+        component.set("v.prediction", "Getting prediction...");   
+    },
+    /*analyseAgain: function(component, base64Data) {
          component.set("v.spinnerWaiting", true);
         var action = component.get("c.analyseImage"); 
         var c_type = component.get("v.modelName");
@@ -125,7 +179,7 @@
         });      
         $A.enqueueAction(action); 
         component.set("v.prediction", "Getting prediction...");    
-    },
+    },*/
     
     createPredictionRecord: function(component){
   
