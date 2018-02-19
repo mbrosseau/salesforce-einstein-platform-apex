@@ -58,10 +58,7 @@ public class Einstein_PlaygroundController {
 
     @AuraEnabled
     public static void createDatasetFromUrl(String url, String dataType) {
-            Einstein_Settings__c settings = Einstein_Settings__c.getOrgDefaults();
-        if (settings.Einstein_EMail__c == 'msalem.etdemos2@gmail.com') {
-           throw new AuraHandledException('Permission Denied. Cannot create dataset from shared account (Emerging Technologies).  Please see https://sfdc.co/EinsteinPlatformDemoSetup for information on how to set up your account.');
-        }
+         
         
         setType(dataType);
         service.createDatasetFromUrlAsync(url);
@@ -98,10 +95,7 @@ public class Einstein_PlaygroundController {
 
     @AuraEnabled
     public static String trainDataset(Decimal datasetId, String modelName, String dataType) {
-            Einstein_Settings__c settings = Einstein_Settings__c.getOrgDefaults();
-        if (settings.Einstein_EMail__c == 'msalem.etdemos2@gmail.com') {
-           throw new AuraHandledException('Permission Denied. Cannot create dataset from shared account (Emerging Technologies).  Please see https://sfdc.co/EinsteinPlatformDemoSetup for information on how to set up your account.');
-        }
+          
         
         setType(dataType);
         Einstein_Model model = service.trainDataset(datasetId.longValue(), modelName, 0, 0, null);
@@ -113,10 +107,7 @@ public class Einstein_PlaygroundController {
 
     @AuraEnabled
     public static String retrainDataset(String modelId, String dataType) {
-            Einstein_Settings__c settings = Einstein_Settings__c.getOrgDefaults();
-        if (settings.Einstein_EMail__c == 'msalem.etdemos2@gmail.com') {
-           throw new AuraHandledException('Permission Denied. Cannot create dataset from shared account (Emerging Technologies).  Please see https://sfdc.co/EinsteinPlatformDemoSetup for information on how to set up your account.');
-        }
+           
         
         setType(dataType);
         Einstein_Model model = service.retrainDataset(modelId, 0, 0, null);
@@ -128,10 +119,7 @@ public class Einstein_PlaygroundController {
 
     @AuraEnabled
     public static void deleteDataset(Long datasetId, String dataType) {
-            Einstein_Settings__c settings = Einstein_Settings__c.getOrgDefaults();
-        if (settings.Einstein_EMail__c == 'msalem.etdemos2@gmail.com') {
-           throw new AuraHandledException('Permission Denied. Cannot create dataset from shared account (Emerging Technologies).  Please see https://sfdc.co/EinsteinPlatformDemoSetup for information on how to set up your account.');
-        }
+         
         
         setType(dataType);
         service.deleteDataset(datasetId);
