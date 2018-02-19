@@ -1,4 +1,4 @@
-<aura:component>
+<aura:component >
 		<aura:attribute name="f1" type="object" access="public" required="true" />
 
 		<aura:attribute name="f1Type" type="string"/>

@@ -1,4 +1,4 @@
-<aura:component>
+<aura:component >
 
 	<aura:attribute name="detail" type="object[]" access="public" required="false"/>
 

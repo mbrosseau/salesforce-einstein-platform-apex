@@ -1,4 +1,4 @@
-<aura:component>
+<aura:component >
 	<aura:attribute name="matrix" type="object[]" access="public" required="true"/>
 	<aura:attribute name="matrixType" type="string" />
 

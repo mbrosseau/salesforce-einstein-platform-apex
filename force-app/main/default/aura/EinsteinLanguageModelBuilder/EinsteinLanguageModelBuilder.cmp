@@ -1,4 +1,4 @@
-<aura:component controller="Einstein_PlaygroundController" implements="flexipage:availableForAllPageTypes">
+<aura:component controller="Einstein_PlaygroundController" >
 
 	<aura:attribute name="objects" type="object[]" />
 	<aura:attribute name="selectedObject" type="string" />
@@ -59,7 +59,7 @@
 
 				<aura:if isTrue="{!and(!v.CV, and(v.selectedSourceField, v.selectedclassificationField))}">
 					<div class="">
-						<lightning:buttonGroup>
+						<lightning:buttonGroup >
 							<lightning:button variant="brand" label="Get File" onclick="{! c.createFile }" />
 							<!-- <lightning:button variant="brand" label="Build Dataset" onclick="{! c.makeModel }" /> -->
 						</lightning:buttonGroup>

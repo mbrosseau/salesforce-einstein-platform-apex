@@ -935,9 +935,32 @@ public class Einstein_PredictionService {
         Einstein_Settings__c settings = Einstein_Settings__c.getOrgDefaults();
         Einstein_JWT jwt = new Einstein_JWT('RS256');
         String accessToken = '';
-
+		Integer tokenTimeoutHrs = 2;    
+        String accessTokenCache = 'accessToken';
+        String dateCache = 'tokenTime';
+        Boolean cacheEnabled = false;
+        String cachPartition = null;
+        
         if (!Test.isRunningTest()) {
+        
+            if( settings.CacheName__c != null) {
+                cachPartition = 'local.' + settings.CacheName__c;
+                accessToken = (String)  Cache.Org.get(cachPartition + '.' + accessTokenCache);
+                if(accessToken != null) {
+                      System.debug('Einstein Access Token Cache Hit');
+                      DateTime tokenTime = (DateTime) Cache.Org.get(dateCache);
+                      DateTime tokenTimeout = tokenTime.addHours(tokenTimeoutHrs);
+                    if(tokenTimeout > DateTime.Now()) {   
+                    System.debug(accessToken);      
+                        return accessToken;
+                    } else {
+                          System.debug('Einstein Access Token Not Valid.. going to refresh');
+                    }
+                }
+            }
 
+    	 System.debug('Einstein Access Token Cache Miss');
+             
             if (settings.Einstein_EMail__c == null) {
                 throw new Einstein_ConfigurationException('Missing Einstein email setting. Check your Custom Settings.');
             }
@@ -964,9 +987,22 @@ public class Einstein_PredictionService {
             jwt.iss = 'developer.force.com';
             jwt.sub = settings.Einstein_EMail__c;
             jwt.aud = OAUTH2;
-            jwt.exp = '3600';      
+            jwt.exp = '3600';
+            
+             accessToken = Einstein_JWTBearerFlow.getAccessToken(OAUTH2, jwt);
+            
+            if( settings.CacheName__c != null) {  
+            	System.debug('-- Storing Einstein Platform token in cache --');
+              	DateTime tokenTime = DateTime.now();
+    
+             	Cache.OrgPartition orgPart = Cache.Org.getPartition(cachPartition);
+             	orgPart.put('accessToken', accessToken);
+             	orgPart.put('tokenTime', tokenTime);
+      		}
+   	 	
+    		System.debug(accessToken);
         
-            accessToken = Einstein_JWTBearerFlow.getAccessToken(OAUTH2, jwt);
+           
         }
 
         return accessToken;
