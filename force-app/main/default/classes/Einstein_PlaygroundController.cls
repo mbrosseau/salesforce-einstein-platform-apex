@@ -69,7 +69,11 @@ public class Einstein_PlaygroundController {
 
     @AuraEnabled
     public static List<Einstein_Dataset> getDatasets(String dataType) {
+        try {
         setType(dataType);
+        if (service.httpStatusCode>200) {
+            throw new AuraHandledException(service.httpErrorMessage);
+        }
         List<Einstein_Dataset> datasets = service.getDatasets();
         List<Einstein_Dataset> datasetsReturn = new List<Einstein_Dataset>();
         for (Einstein_Dataset dataset : datasets) {
@@ -81,6 +85,11 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return datasetsReturn;
+        } catch (Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }        
+            
     }
 
     @AuraEnabled
