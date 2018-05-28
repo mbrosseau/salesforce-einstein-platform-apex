@@ -11,10 +11,12 @@
       var state = response.getState();
       if (state === "ERROR") {
         var errors = response.getError();
+           self.handleErrors(response.getError());
         if (errors) {
-          if (errors[0] && errors[0].message) {
-            return alert(errors[0].message);
-          }
+         // if (errors[0] && errors[0].message) {
+//            return alert(errors[0].message);
+        //  }
+        
         } else {
           return console.log("Unknown error");
         }
@@ -42,14 +44,15 @@
       event.fire();
       var state = response.getState();
       if (state === "ERROR") {
-        var errors = response.getError();
-        if (errors) {
+            self.handleErrors(response.getError());
+       /* var errors = response.getError();
+       if (errors) {
           if (errors[0] && errors[0].message) {
-            return alert(errors[0].message);
+           return alert(errors[0].message);
           }
         } else {
           return console.log("Unknown error");
-        }
+        } */
       }
       self.onLoadDatasets(component);
     });
@@ -71,11 +74,13 @@
       event.fire();
       var state = response.getState();
       if (state === "ERROR") {
+            self.handleErrors(response.getError());
         var errors = response.getError();
         if (errors) {
-          if (errors[0] && errors[0].message) {
-            return alert(errors[0].message);
-          }
+         // if (errors[0] && errors[0].message) {
+         //   return alert(errors[0].message);
+         // }
+        
         } else {
           return console.log("Unknown error");
         }
@@ -95,5 +100,28 @@
     var event = component.getEvent("waitingEvent");
     event.fire();
     $A.enqueueAction(action);
-  }
+  },
+   
+   handleErrors : function(errors) {
+       console.log("Found error");
+       for(var i=0; i<errors.length; i++) {
+              console.log( errors[i]);
+           console.log( errors[i].message);
+       }
+     
+        // Configure error toast
+        let toastParams = {
+            title: "Error",
+            message: "Unknown error", // Default error message
+            type: "error"
+        };
+        // Pass the error message if any
+        if (errors && Array.isArray(errors) && errors.length > 0) {
+            toastParams.message = errors[0].message;
+        }
+        // Fire error toast
+        let toastEvent = $A.get("e.force:showToast");
+        toastEvent.setParams(toastParams);
+        toastEvent.fire();
+    }
 });
