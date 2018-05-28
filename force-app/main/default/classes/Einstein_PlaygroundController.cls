@@ -165,7 +165,7 @@ public class Einstein_PlaygroundController {
     public static Einstein_PredictionResult predictImageDetectionURL(String modelId, String url) {
         setType('');
         service.setType(Einstein_PredictionService.Types.IMAGE_DETECTION);
-        Einstein_PredictionResult result = service.predictImageUrl(modelId, url, 0, '');
+        Einstein_PredictionResult result = service.detectImageUrl(modelId, url, 0, '');
         if (service.httpStatusCode>200) {
             throw new AuraHandledException(service.httpErrorMessage);
         }
@@ -293,7 +293,7 @@ public class Einstein_PlaygroundController {
 		ContentVersion CV = new ContentVersion();
 		CV.VersionData = blob.valueof(makeCSV(obj, src, classify));
 		CV.PathOnClient = obj +'-' + classify + '.csv';
-		CV.Title = obj +'_' + classify + 'by' + src;
+		CV.Title = obj +'_' + classify + '_by_' + src;
 
 		insert CV;
         //requery to get contentdocumentID that was created

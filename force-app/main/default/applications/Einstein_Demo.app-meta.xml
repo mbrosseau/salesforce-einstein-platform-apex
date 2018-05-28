@@ -12,6 +12,10 @@
     <navType>Standard</navType>
     <tabs>Playground</tabs>
     <tabs>Einstein_Usage</tabs>
+<<<<<<< HEAD
+=======
+    <tabs>Language_Model_Builder</tabs>
+>>>>>>> 8862bf8668c433a9d4f7b417e607103b974016b3
     <uiType>Lightning</uiType>
     <utilityBar>Einstein_Demo_UtilityBar</utilityBar>
 </CustomApplication>
