@@ -38,7 +38,18 @@
           
          
           var compEvent = component.getEvent("scanCompletedEvent");
-		compEvent.fire();      
+		compEvent.fire();     
+          
+       var postToChatter = component.get("v.postToChatter");
+        		var attachImage = component.get("v.attachImage");
+        
+       if(postToChatter && !attachImage) {
+            let errors = [];
+            let errorItem =  {message: 'Vision Component Configuration Error: Posting to chatter requires a file attachment. Please double check lightning component configuration.'};
+			errors[0] = errorItem;
+                    
+           this.handleErrors(errors);
+        }
           
     });
     component.set("v.predictions", null);
@@ -213,7 +224,188 @@
  			$A.enqueueAction(action);
         }
     },
-   
+     analyzeContent: function(component, contentId) {
+    
+        var action = component.get("c.createContentUrl"); 
+       
+        action.setParams({     
+            contentDocumentId: contentId
+        });
+
+  		action.setCallback(this, function(response) {
+            console.log("Got Response analyzeContent " );
+            
+            var state = response.getState();
+            var errors = action.getError();
+            if(state === 'SUCCESS') {
+              
+                var returnValue = response.getReturnValue();
+                 console.log("analyzeContent SUCCESS " + returnValue);
+                component.set("v.imgUrl", returnValue);
+          
+       			this.analyseUrl(component);
+                
+            } else if(state === 'ERROR') {
+              console.log("analyzeContent ERROR" );
+               $A.log("Errors", errors);
+                this.handleErrors(errors);
+            } 
+        });
+        
+          console.log("Sending .."  );
+        $A.enqueueAction(action); 
+       
+        
+    },
+    
+     postToChatter: function(component, contentId) {
+         var action = component.get("c.postImageToChatter"); 
+         
+          var recId = component.get("v.recordId");
+          var contentId = component.get("v.attachId");
+          var classification = component.get("v.prediction");
+         var comment = 'Analyzed photo.';
+         console.log("Attach " + contentId);
+       //postImageToChatter(String recordId, String docId, String comment) {
+        action.setParams({     
+            recordId: recId,
+             docId: contentId,
+             comment: comment
+        });
+
+  		action.setCallback(this, function(response) {
+           
+            var state = response.getState();
+            var errors = action.getError();
+            if(state === 'SUCCESS') {
+                       console.log("postToChatter SUCCESS" );              
+            } else if(state === 'ERROR') {
+              console.log("analyzeContent ERROR" );
+               $A.log("Errors", errors);
+                this.handleErrors(errors);
+            } 
+        });
+        
+         
+        $A.enqueueAction(action); 
+         
+     },
+    
+    analyseUrl: function(component) {
+         component.set("v.spinnerWaiting", true);
+    
+        var action = component.get("c.analyseImageUrl"); 
+        var recId = component.get("v.recordId");
+        var modelId = component.get("v.modelId");
+        var url = component.get("v.imgUrl");
+
+        console.log("Analyzing " + modelId);
+        
+        action.setParams({     
+            modelName: modelId,
+            url: url
+        });
+
+        action.setCallback(this, function(response) {
+            component.set("v.spinnerWaiting", false);
+
+             console.log("Got Response analyseUrl " );
+            
+            var state = response.getState();
+            var errors = action.getError();
+            if(state === 'SUCCESS') {
+                var result = response.getReturnValue();
+              var rawPredictions = JSON.stringify(result, null, 4);
+              component.set("v.predictions", result);
+              component.set("v.rawPredictions", rawPredictions);
+              var ro = new ResizeObserver(entries => {
+                this.generateSvg(component);
+              });
+              var img = component.find("imgItself").getElement();
+              ro.observe(img);
+              this.calculateShelfData(component);
+              component.set("v.showDatatable", true);
+          
+         
+              var compEvent = component.getEvent("scanCompletedEvent");
+            compEvent.fire();  
+             var postToChatter = component.get("v.postToChatter");
+             if(postToChatter) {
+                 this.postToChatter(component);
+             }
+                
+            } else if(state === 'ERROR') {
+           
+               $A.log("Errors", errors);
+                this.handleErrors(errors);
+            }
+        });
+        
+          console.log("Sending .."  );
+        $A.enqueueAction(action); 
+        component.set("v.prediction", "Getting prediction...");  
+        
+    },
+    
+    analyse: function(component, file, base64Data) {
+        component.set("v.spinnerWaiting", true);
+        
+        component.set("v.message", file.name);
+        var action = component.get("c.analyseImage"); 
+        var recId = component.get("v.recordId");
+        var c_type = component.get("v.modelName");
+        var keyContent = component.get("v.keyContent");
+       
+
+        console.log("Analyzing " + c_type);
+        
+        action.setParams({
+            recId : recId,
+            fileName: file.name,
+            base64Data: base64Data,
+            modelName: c_type,
+            contentType: file.type,
+            keyContent: keyContent
+           
+        });
+
+        action.setCallback(this, function(response) {
+            component.set("v.spinnerWaiting", false);
+
+             console.log("Got Response " );
+            
+            var state = response.getState();
+            var errors = action.getError();
+            if(state === 'SUCCESS') {
+                    
+              var result= response.getReturnValue();
+              var rawPredictions = JSON.stringify(result, null, 4);
+              component.set("v.predictions", result);
+              component.set("v.rawPredictions", rawPredictions);
+              var ro = new ResizeObserver(entries => {
+                this.generateSvg(component);
+              });
+              var img = component.find("imgItself").getElement();
+              ro.observe(img);
+              this.calculateShelfData(component);
+              component.set("v.showDatatable", true);
+                  
+         
+              var compEvent = component.getEvent("scanCompletedEvent");
+            compEvent.fire();      
+                    
+         
+            } else if(state === 'ERROR') {
+             //   component.set("v.message", "Something went wrong " + errors[0].message);
+               $A.log("Errors", errors);
+                this.handleErrors(errors);
+            }
+        });
+        
+        console.log("Sending .."  );
+        $A.enqueueAction(action); 
+        component.set("v.prediction", "Getting prediction...");   
+    },
    handleErrors : function(errors) {
         // Configure error toast
         let toastParams = {

@@ -1,8 +1,8 @@
 ({
-     getIntent : function(component, event, startPos, controller) {
+     getIntent : function(component, event, startPos, controller, lastId) {
          var helper = this;  
 		
-         var BATCH_SIZE = 50;
+         var BATCH_SIZE = 80;
          var END_POS = component.get("v.objectCount");
         
          if(startPos > END_POS) {
@@ -19,6 +19,12 @@
          var sourceName = component.get("v.selectedSourceField");
          var destinationName = component.get("v.selectedDestinationField");
          var objectName = component.get("v.selectedObject");
+       
+         var overwrite =  component.get("v.overwriteValues"); 
+         
+        //  console.log("overwrite cmp");
+       //  console.log(overwrite);
+          
  
         var endPos = startPos + BATCH_SIZE;
         console.log("Sending " + modelId + " " + sourceName  + " " + destinationName + " " + objectName );  
@@ -30,8 +36,9 @@
             sourceName : sourceName,
             destinationName : destinationName,
             objectName : objectName,
-            startOff : startPos,
-            endOff : endPos
+            batchSize : BATCH_SIZE,
+             overwriteValues: overwrite,
+             latestId: lastId
         });
   
     	action.setCallback(this, function(a) {
@@ -51,7 +58,9 @@
                  component.set("v.objectsCompleted", objectsCompleted);
                  component.set("v.progressPercent", progressPercent);
                 
-                helper.getIntent(component, event, startPos, controller);
+                let newLastId = a.getReturnValue();
+                
+                helper.getIntent(component, event, startPos, controller, newLastId);
                 
             } else if (a.getState() === "ERROR") {                      
                 $A.log("Errors", a.getError());

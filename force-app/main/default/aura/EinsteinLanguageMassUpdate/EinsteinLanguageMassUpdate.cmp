@@ -13,6 +13,7 @@
 
 	<aura:attribute name="sourceFields" type="object[]"/>
 	<aura:attribute name="selectedSourceField" type="string"/>
+    <aura:attribute name="overwriteValues" type="boolean" default="false"/>
 
     <aura:attribute name="selectedDestinationField" type="string"/>
     
@@ -30,7 +31,10 @@
  <div class="slds-card">
 		<lightning:card title="Mass Update" iconName="utility:signpost" variant="base" >
 			<div class="slds-p-around--medium">
-               
+                 <div class="slds-m-bottom--medium">
+					<lightning:input type="checkbox" label="Overwrite Existing Values" name="overwrite" aura:id="overwrite" checked="{!v.overwriteValues}" />
+
+				</div>
                 <div class="slds-m-bottom--medium">
 					<lightning:select label="Select a source Dataset" value="{!v.datasetId}"  onchange="{!c.getModels}">>
 						<option text="-- Select --" value=""/>

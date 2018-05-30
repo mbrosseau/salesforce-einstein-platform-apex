@@ -1,19 +1,19 @@
 ({  
     onInit: function(component, event, helper) {
        
-        var selected = component.get("v.modelName");
-        component.set("v.selectedModel", selected);
-        
-        helper.getModels(component);
-        
-        
-        
-        if(component.get("v.modelName") == '') {
-            console.log("Empty Model");
-            var selected = component.find("levels").get("v.value");
-           
-            component.set("v.modelName", selected);  
+         var selected = component.get("v.modelName");
+        if(selected== null) { 
+             selected =  "GeneralImageClassifier";  
+             component.set("v.modelName", selected);
+            helper.getModels(component);
+        }  else {
+             component.set("v.selectedModel", selected);
         }
+       
+       
+        
+        
+        
     },
      
     onDragOver: function(component, event) {
@@ -62,6 +62,23 @@
       
         helper.readFile(component, helper, selectedFile);
         //reader.readAsDataURL(selectedFile);
-}
+},
+    handleUploadFinished: function(component, event, helper) {
+     //  console.log("upload finished");
+        var uploadedFiles = event.getParam("files");
+        var contentId = '';
+         var modelId = component.get("v.modelName");
+        console.log("upload finished " + uploadedFiles.length);
+        
+        
+        for(var i=0; i<uploadedFiles.length; i++) {
+           console.log( uploadedFiles[i].name + ' - ' + uploadedFiles[i].documentId );
+           contentId =  uploadedFiles[i].documentId;
+        }
+         component.set("v.attachId", contentId);
+        
+        helper.analyzeContent(component, contentId);
+       
+    }
 
 })

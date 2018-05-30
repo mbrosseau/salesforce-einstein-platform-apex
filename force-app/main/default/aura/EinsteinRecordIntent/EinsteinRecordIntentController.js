@@ -1,6 +1,6 @@
 ({
 	doInit : function(component, event, helper) {
-         component.set('v.cardLabel', 'Einstein Intent');
+        // component.set('v.cardLabel', 'Einstein Intent');
         
         let action = component.get('c.getRecordAnalysis');
                
@@ -26,7 +26,7 @@
         
         $A.enqueueAction(action);
         
-        let action2 = component.get('c.getRecordName');
+        /*let action2 = component.get('c.getRecordName');
                
         action2.setParams({
             recordId: component.get('v.recordId'),
@@ -45,20 +45,20 @@
                     
                     if(modelId == 'CommunitySentiment') {
                         einsteinLabel = 'Sentiment';
-                    } else {
-                        einsteinLabel = 'Intent';
+                   /} else {
+                       einsteinLabel = 'Intent';
                     }
                     let title = retVal + ' '  + einsteinLabel;
                     
-                    component.set('v.cardLabel', title);
+                   // component.set('v.cardLabel', title);
                     
                 }
             } else {
                 this.handleErrors(res.getError());
-            }
+            } 
         })
         
-        $A.enqueueAction(action2);
+        $A.enqueueAction(action2); */
     },
     savePrediction : function(component, event, helper) {
         

@@ -17,13 +17,31 @@
       var reader = new FileReader();
       reader.onloadend = function() {
         var dataURL = reader.result;
-        component.set("v.pictureSrc", dataURL);
+        component.set("v.imgUrl", dataURL);
         component.set("v.fileName", file.name);
         helper.upload(component, file.name, dataURL.match(/,(.*)$/)[1]);
       };
       reader.readAsDataURL(file);
     }
   },
+     handleUploadFinished: function(component, event, helper) {
+     //  console.log("upload finished");
+        var uploadedFiles = event.getParam("files");
+        var contentId = '';
+         var modelId = component.get("v.modelName");
+        console.log("upload finished " + uploadedFiles.length);
+        
+        
+        for(var i=0; i<uploadedFiles.length; i++) {
+           console.log( uploadedFiles[i].name + ' - ' + uploadedFiles[i].documentId );
+           contentId =  uploadedFiles[i].documentId;
+        }
+         component.set("v.attachId", contentId);
+        
+        helper.analyzeContent(component, contentId);
+       
+    },
+    
   store: function(component, fileName, base64Data) {
     var action = component.get("c.storeScanResults");
     var shelfData = component.get("v.shelfData");

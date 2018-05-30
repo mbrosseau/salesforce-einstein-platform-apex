@@ -62,37 +62,53 @@ public class EinsteinLanguageMassUpdateController {
 	}
 
     @AuraEnabled
+    @Readonly
+    @RemoteAction
     public static Integer getObjectCount(string objectName){
         Integer count = 0;
  
-        AggregateResult[] groupedResults  = Database.query('SELECT count(Id)cnt FROM ' + objectName);
+        AggregateResult[] groupedResults  = Database.query('SELECT count(Id)cnt FROM ' + objectName );
 		count = (Integer) groupedResults[0].get('cnt');
         
         return count;
     }
 
   @AuraEnabled
-    public static void goClassify( String sourceName, String destinationName, String objectName, Integer startOff, Integer endOff, String modelId) {
+    public static String goClassify( String sourceName, String destinationName, String objectName, Integer batchSize, String modelId,  String overwriteValues, String latestId) {
          
-        Integer maxSize = 100;
+
         System.debug('---- Started Classification ----');
-        System.debug(modelId + ' '  + startOff + ' ' + endOff);
-         
-    	Integer endPoint = Integer.valueOf(endOff);
-        Integer startPoint = Integer.valueOf(startOff);
+         Boolean overwrite = Boolean.valueOf(overwriteValues);
+        System.debug(modelId + ' '  + latestId + ' ' + batchSize  + ' ' + overwrite);
+      //  System.debug( overwriteValues);
+  
+       Integer maxSize = Integer.valueOf(batchSize);
       
        
-        List<SObject > dataList = Database.query('SELECT id, ' + sourceName + ' FROM ' + objectName + ' order by id');
+        List<SObject > dataList = null;
+        if(latestId == null ) {
+             System.debug('- Started From Scratch --');
+           dataList =  Database.query('SELECT id, ' + sourceName + ',' + destinationName +  ' FROM ' + objectName + ' order by id limit ' + maxSize);
+        } else {
+            dataList =  Database.query('SELECT id, ' + sourceName + ',' + destinationName +  ' FROM ' + objectName + ' where id > \'' + latestId + '\' order by id limit ' + maxSize);
+        }
+        
+         System.debug('Got dataset of size ' + dataList.size());
        List<SObject > shortList  = new List<SObject >();   
         
         Einstein_PredictionService service;
         service = new Einstein_PredictionService(Einstein_PredictionService.Types.Intent);
         
-              for (Integer i = 0; i < dataList.size() && i<endPoint; i++) {
+              for (Integer i = 0; i < dataList.size() && i < maxSize; i++) {
+                  
+                  SObject  obj = dataList.get(i);
+                  latestId = (string) obj.get('id');
+                  String text = (String)obj.get(sourceName);
+                   String existingValue = (String)obj.get(destinationName);
+              
+                   if((overwrite || existingValue == null || existingValue.length() ==0) && (text != null && text.length() >0) ) {
+                      
                  
-                   if(i >= startPoint) {
-                       SObject  obj = dataList.get(i);
-                       String text = (String)obj.get(sourceName);
                         Einstein_PredictionResult predictionList = null;
                        if(modelId == 'CommunitySentiment') {
                          	predictionList = service.predictSentiment(modelId, text, 2, null);
@@ -108,21 +124,24 @@ public class EinsteinLanguageMassUpdateController {
                         }
                                     
                         for(Einstein_Probability pred : predictionList.probabilities) {
-                            //system.debug(pred);
+                           // System.debug(pred);
                             if(pred.probability > topPred) {
                                label = pred.label;
                                topPred = pred.probability;
                             }
                         }  
-
+                       
+						//System.debug(label); 
                         obj.put(destinationName, label);
                  
                         shortList.add(obj);
                        
                     }
                 }
-                System.debug('---- Saving List ----');
-        update shortList;   
+            System.debug('---- Saving List ' + shortList.size() + ' ----');
+        	update shortList; 
+           
+            return latestId;  
    }
     
     @AuraEnabled

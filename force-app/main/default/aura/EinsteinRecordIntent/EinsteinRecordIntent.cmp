@@ -1,4 +1,4 @@
-<aura:component controller="EinsteinRecordSentimentCtr" extends="c:EinsteinPlatform_Card" implements="flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+<aura:component controller="EinsteinRecordSentimentCtr" extends="c:EinsteinPlatform_Card" implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:availableForFlowScreens" access="global" >
    
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
     <aura:attribute name="recordId" type="Id" ></aura:attribute>
@@ -6,7 +6,8 @@
     <aura:attribute name="saveToField" type="String" ></aura:attribute>
      <aura:attribute name="modelId" type="String" ></aura:attribute>
     <aura:attribute name="predictionList" type="Object[]" ></aura:attribute>
-     
+      
+    
     <div class="slds-scope">
         <div class="slds-text-title_caps predictive-header">Intent Analysis Probabilities</div>
         <hr/>

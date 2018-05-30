@@ -61,6 +61,9 @@
          
        var action = component.get("c.getObjectFields");	
         
+        
+        component.set("v.objectsCompleted", 0);	
+        
         let objName =  component.get("v.selectedObject");
 		action.setParams({
 			"objectName" : objName,
@@ -98,9 +101,10 @@
 	},
      handleIntent : function(component, event, helper) {
 		var startPos = 0;
+        component.set("v.objectsCompleted", startPos);	
         console.log("Start " + startPos);
         var controller = "c.goClassify";
-		helper.getIntent(component, event, startPos, controller);
+		helper.getIntent(component, event, startPos, controller, null);
         
 	}
 })

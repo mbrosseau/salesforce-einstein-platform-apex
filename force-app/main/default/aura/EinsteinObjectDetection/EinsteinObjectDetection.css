@@ -14,9 +14,14 @@
     height: 150px;
 }
 
+.THIS div .img-container {
+  background-color: #F1F1F1;
+}
+
 .THIS .image-container {
     position: relative;
     height: 300px;
+    
 }
 
 .THIS .image-container img {
@@ -45,4 +50,22 @@
 
 .THIS .button-right {
     float: right;
+}
+
+.THIS .einstein-drop{
+      color:#aaaaaa;
+}
+
+.THIS div.polaroid {
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    min-height: 200px;
+    min-width: 200px;
+    max-height: 300px;
+    max-width: 400px;
+    height: auto;
+    border-radius: 4px;
+    overflow:hidden;  
+     background-color: #F1F1F1;
 }

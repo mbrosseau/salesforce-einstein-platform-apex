@@ -1,5 +1,5 @@
 <aura:component controller="EinsteinVisionController" 
-                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"   access="global" >    
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:availableForFlowScreens"   access="global" >    
     <aura:attribute name="recordId" type="Id"/>
   
      <aura:attribute name="persistResult" type="Boolean" default="false"/>
@@ -17,6 +17,9 @@
     <aura:attribute name="attachId" type="String" default=""/>
     <aura:attribute name="fileData" type="String"/>
   	<aura:attribute name="modelName" type="String"/>
+     <aura:attribute name="attachImage"  type="boolean" default="false" />
+     <aura:attribute name="postToChatter"  type="boolean" default="false" />
+    
    	<aura:attribute name="selectedModel" type="String"/>
     <aura:attribute name="alignHorizontal" type="Boolean" default="false"/>
     <aura:attribute name="title" type="string" default="Einstein Vision"/>
@@ -60,10 +63,18 @@
                       <tr> <td>
                    <div class="container">
                         <div id="fileuploader" style="padding-top:5px;padding-bottom:5px;">
-                            <label for="file-upload" style="font-size:13px;padding-top:6px; padding-bottom:6px;border-radius:5px;margin-left: auto;margin-right: auto;" class="slds-button_brand">
+                            <aura:if isTrue="{!v.attachImage}">
+                <lightning:fileUpload label="Image (max. 5MB):" name="fileUploader"  multiple="false" recordId="{!v.recordId}"   accept=".jpg, .png, .jpeg"
+                                      onuploadfinished="{!c.handleUploadFinished}" />
+                <aura:set attribute="else">
+                      <label for="file-upload" style="font-size:13px;padding-top:6px; padding-bottom:6px;border-radius:5px;margin-left: auto;margin-right: auto;" class="slds-button_brand">
                                 Upload Photo
                             </label>
                             <input id="file-upload" onchange="{!c.onFileSelected}" type="file"/>
+                </aura:set>
+            </aura:if>
+                            
+                          
                         </div>
                     </div>
                            </td>
@@ -106,6 +117,7 @@
         </div>
              <aura:if isTrue="{!and(v.objectName != '', v.objectName != null)}">
         <div class="slds-card__footer">  
+            
          <lightning:button variant="brand" label="Add Item" onclick="{! c.handleClick }" />
         </div>
             </aura:if>
@@ -135,14 +147,7 @@
                        <div class="img-container slds-align_absolute-center"><img src="{!v.pictureSrc}" class="picture slds-align_absolute-center"/></div>
                       <p class="container slds-align--absolute-center">{!v.message}</p>
                    </div>
-                     <div class="container">
-                        <div id="fileuploader" style="padding-top:5px;padding-bottom:5px;">
-                            <label for="file-upload" style="font-size:13px;padding-top:6px; padding-bottom:6px;border-radius:5px" class="slds-button_brand">
-                                Upload Photo
-                            </label>
-                            <input id="file-upload" onchange="{!c.onFileSelected}" type="file"/>
-                        </div>
-                    </div>
+                
                     <div class="slds-tile slds-p-top_large">
                         <div class="slds-tile__detail slds-text-body--small">
                             <aura:if isTrue="{!or(v.selectedModel == '', v.selectedModel == null)}">
@@ -173,6 +178,22 @@
                             </dl>
                             </aura:if>
                         </div>
+                    </div>
+                         <div class="container">
+                       
+                         
+                        <div id="fileuploader" style="padding-top:5px;padding-bottom:5px;">
+                                  <aura:if isTrue="{!v.attachImage}">
+                <lightning:fileUpload label="Image (max. 5MB):" name="fileUploader"  multiple="false" recordId="{!v.recordId}"   accept=".jpg, .png, .jpeg"
+                                      onuploadfinished="{!c.handleUploadFinished}" />
+                <aura:set attribute="else">
+                      <label for="file-upload" style="font-size:13px;padding-top:6px; padding-bottom:6px;border-radius:5px;margin-left: auto;margin-right: auto;" class="slds-button_brand">
+                                Upload Photo
+                            </label>
+                            <input id="file-upload" onchange="{!c.onFileSelected}" type="file"/>
+                </aura:set>
+            </aura:if>
+                    </div>
                     </div>
                 </lightning:layoutItem>
             </lightning:layout>
