@@ -1,0 +1,15 @@
+<design:component label="Einstein Platform - Vision">
+   
+    <design:attribute name="title" label="Title" description="Title that appears on the header"  default="Einstein Vision"/>
+   <design:attribute name="modelName" label="Model ID" description="Model ID of the trained Object Detection model" />
+ 
+    
+   <design:attribute name="objectName" label="Object Name" description="Name of the Object you'd like to create on save" />
+    <design:attribute name="fieldName" label="Field Name" description="Field of Object Name where the label will be persisted to" />
+    
+    <design:attribute name="alignHorizontal" label="Horizontal Layout" default="false"/>
+         <design:attribute name="attachImage" label="Attach Image to Record" 
+                      description="Increases max file size" default="false"/>
+    <design:attribute name="postToChatter" label="Post to Chatter"   description="Only works with file attachments"
+                     default="false"/>
+</design:component>

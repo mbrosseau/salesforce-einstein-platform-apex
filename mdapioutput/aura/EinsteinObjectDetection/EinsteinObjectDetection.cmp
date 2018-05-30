@@ -1,0 +1,77 @@
+<aura:component controller="ObjectDetectionController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:availableForFlowScreens" access="global" >    
+    <aura:attribute name="recordId" type="Id"/>
+    
+    <aura:registerEvent name="scanCompletedEvent" type="c:ShelfScanCompleted"/> 
+    
+    <aura:attribute name="spinnerWaiting" type="Boolean" default="false" />
+    <aura:attribute name="showDatatable" type="Boolean" default="false" />
+    
+    <aura:attribute name="modelId" type="String" />
+    <aura:attribute name="objectName" type="String" />
+    <aura:attribute name="attachImage" type="boolean" />
+    <aura:attribute name="postToChatter" type="boolean" />
+    
+    
+    <aura:attribute name="labelFieldName"  type="String" />
+    <aura:attribute name="countFieldName"  type="String" />
+    
+    <aura:attribute name="imageType" type="String" />
+    <aura:attribute name="attachId" type="String" default=""/>
+    
+    <aura:attribute name="files" type="Object[]" />
+    <aura:attribute name="predictions" type="Einstein_PredictionResult" />
+    <aura:attribute name="rawPredictions" type="String" />
+    <aura:attribute name="shelfData" type="Object[]" />
+    <aura:attribute name="shelfDataColumns" type="List" />
+    
+    <aura:attribute name="fileName" type="String" />
+    <aura:attribute name="message" type="String" default="Drag Picture Here" />
+    
+    <aura:attribute name="imgUrl" type="String" default="https://s3-us-west-1.amazonaws.com/sfdc-demo/image-placeholder.png"/>
+    
+    <!-- <ltng:require scripts="{! $Resource.resize }" afterScriptsLoaded="{!c.loadResizeListener}" />  -->
+    <ltng:require scripts="{! $Resource.resize }" />
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }" />
+    
+    <div  class="einstein">
+        <center>
+            <aura:if isTrue="{!v.attachImage}">
+                <lightning:fileUpload label="Image (max. 5MB):" name="fileUploader"  multiple="false" recordId="{!v.recordId}"   accept=".jpg, .png, .jpeg"
+                                      onuploadfinished="{!c.handleUploadFinished}" />
+                <aura:set attribute="else">
+                    <lightning:input aura:id="fileInput" type="file" name="file" multiple="false" accept="image/*;capture=camera" files="{!v.files}"
+                                     onchange="{! c.readFile }" label="Image (max. 2MB):" />
+                </aura:set>
+            </aura:if>
+            <p/>
+            <div class="image-container">
+                <div ondragover="{!c.onDragOver}" ondrop="{!c.onDrop}" class="einstein-drop polaroid">
+                    <img aura:id="imgItself" src="{!v.imgUrl}"  class="picture" />
+
+                </div>
+                
+                <div aura:id="imgContainer" class="after">
+                </div>
+            </div>
+        </center>
+        
+        <aura:if isTrue="{!v.showDatatable}">
+            <lightning:datatable data="{!v.shelfData}" keyField="label" columns="{!v.shelfDataColumns}" hideCheckboxColumn="true" />
+            <br />
+            
+            <aura:if isTrue="{!and(v.objectName != '', v.objectName != null)}">
+                <div class="slds-card__footer">  
+                    
+                    <lightning:button variant="brand" label="Add Items" onclick="{! c.addItemstoRecords }" />
+                </div>
+            </aura:if>
+        </aura:if>
+        
+        <aura:if isTrue="{! v.spinnerWaiting }">
+            <lightning:spinner size="small" />
+        </aura:if>
+        
+    </div>
+    
+</aura:component>

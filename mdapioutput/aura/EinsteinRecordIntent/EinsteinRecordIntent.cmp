@@ -1,0 +1,33 @@
+<aura:component controller="EinsteinRecordSentimentCtr" extends="c:EinsteinPlatform_Card" implements="flexipage:availableForRecordHome,force:hasRecordId,lightning:availableForFlowScreens" access="global" >
+   
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
+    <aura:attribute name="recordId" type="Id" ></aura:attribute>
+    <aura:attribute name="fieldName" type="String" ></aura:attribute>
+    <aura:attribute name="saveToField" type="String" ></aura:attribute>
+     <aura:attribute name="modelId" type="String" ></aura:attribute>
+    <aura:attribute name="predictionList" type="Object[]" ></aura:attribute>
+      
+    
+    <div class="slds-scope">
+        <div class="slds-text-title_caps predictive-header">Intent Analysis Probabilities</div>
+        <hr/>
+       
+              <aura:iteration var="item" items="{!v.predictionList}" indexVar="idx">
+            <div class="analysis slds-m-bottom_small">
+                <span class="slds-m-right_small">
+                    <span class="slds-icon-trend slds-is-animated runtime_sales_insightsInsightsTrendingIcon" data-slds-trend="{!v.analysis.Prediction_Result_1__c}">
+                        <c:MOCK_svg xlinkHref="{!'/resource/einstein_arrows#trend-' + item.label}" class="slds-icon"/>
+                    </span>
+                    <lightning:formattedNumber class="slds-m-horizontal_x-small" value="{!item.probability}" style="percent"/> 
+                    <lightning:formattedText class="bold capitalize" value="{!item.label}"></lightning:formattedText>
+                    
+                </span>
+            </div>
+            </aura:iteration>
+         <aura:if isTrue="{!v.saveToField != null}">
+        <div class="slds-card__footer">  
+                  <lightning:button variant="brand" label="Save" onclick="{! c.savePrediction }" />
+                </div>
+        </aura:if>
+    </div>
+</aura:component>
