@@ -957,13 +957,13 @@ public class Einstein_PredictionService {
                 if (settings.CertName__c == null) {
                     
                     
-                   
+                    checkTokenFileCount( tokenFileName );
                      
                     ContentVersion base64Content;
                     // Try to retrieve certificate
                     
                     try {
-                        base64Content = [SELECT Title, VersionData FROM ContentVersion where Title=: tokenFileName AND IsLatest=true order by CreatedDate DESC LIMIT 1];
+                        base64Content = [SELECT Title, VersionData FROM ContentVersion where Title=: tokenFileName AND IsLatest=true LIMIT 1];
                     } catch (QueryException e) {
                         throw new Einstein_ConfigurationException('Could not retrieve the Einstein Platform certificate file: einstein_platform', e);
                     }
@@ -983,15 +983,9 @@ public class Einstein_PredictionService {
                 jwt.aud = OAUTH2;
                 jwt.exp = '3600';
                 
-            try {
                 accessToken = Einstein_JWTBearerFlow.getAccessToken(OAUTH2, jwt);
-            } catch(Exception e) {
-                  checkTokenFileCount( tokenFileName );
-                throw e;
-            }
-                
+          
             if( accessToken == null ) {
-               
                 throw new Einstein_ConfigurationException('Could not retreive token from Einstein Platform. Please check your configuration.');
             }
             
