@@ -17,10 +17,15 @@
 
     getFields: function (component, event, helper) {
         var source = component.get("c.getObjectFields");
+         var selectedObject = component.get("v.selectedObject");
+        
         source.setParams({
-            "objectName": component.get("v.selectedObject"),
+            "objectName": selectedObject,
             "sourceOrLabel": "Source"
         });
+        
+     
+        
         source.setCallback(this, function (a) {
             var state = a.getState();
             if (state === "SUCCESS") {
