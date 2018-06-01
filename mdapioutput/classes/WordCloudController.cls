@@ -1,12 +1,12 @@
 public class WordCloudController {
 
-        @AuraEnabled
+     @AuraEnabled
     @Readonly
     @RemoteAction
    public static Map<String, Integer>  getWordCloudData(String objectName, String fieldName){
-       Integer maxSize = 200000;
+       Integer maxSize =12000;
       
-       List<SObject > dataList =  Database.query('SELECT id, ' + fieldName + ' FROM ' + objectName + ' order by id limit ' + maxSize);
+       List<SObject > dataList =  Database.query('SELECT ' + fieldName + ' FROM ' + objectName + ' limit ' + maxSize);
        Map<String, Integer> wordCounts = new  Map<String, Integer>();
        
         for (Integer i = 0; i < dataList.size() && i < maxSize; i++) {
@@ -19,6 +19,7 @@ public class WordCloudController {
                     Integer itemCount = wordCounts.get(word);
                     if(itemCount == null) {
                         itemCount = 1;
+                        
                     } else {
                        itemCount++; 
                     }
@@ -29,6 +30,8 @@ public class WordCloudController {
       
        return wordCounts;
    }
+    
+ 
     
     private static List<String> getWords(String text) {
         
@@ -41,13 +44,11 @@ public class WordCloudController {
         text = text.toLowerCase();
         Integer wordIndex = text.indexOf(' ');
         Integer loopCount = 0;
-      
-         System.debug(text);
-        while(wordIndex != -1 && loopCount < 2000) {
+ 
+        while(wordIndex != -1 && loopCount < 200) {
             
             String word = text.left(wordIndex);
-          //   System.debug(wordIndex);
-          //  System.debug(word);
+         
             text = text.right(text.length() - (wordIndex + 1));
             wordIndex = text.indexOf(' ');
             loopCount++;
@@ -58,12 +59,13 @@ public class WordCloudController {
         }
        wordList.add(text);
         
-        System.debug(wordList);
+       // System.debug(loopCount);
+      
         return wordList;
     }
    
      private static String cleanText(String text) {
-         text = text.replaceAll('[!@#$%^&*(),.?":{}|<>]', '');
+         text = text.replaceAll('[!@#$%^&*(),.?":{}|<>1234567890_/-]', '');
          
          return text;
      }
@@ -72,7 +74,11 @@ public class WordCloudController {
          List<String> wordList = new list<String> { 'i' , 'to' , 'a', 'be' , 'the', 'to' , 'but', 'like' , 'and', 'with' , 
              'what', 'how' , 'from', 'do' , 'my', 'your' , 'is', 'on' , 'can', 'not' , 'where', 'need', 'can\'t' , 'was', 'no' , 
              'get', 'for' , 'of', 'in' , 'this' , 'are', 'an', 'has' , 'in' , 'by',  'you', 'it',  'me',  'i\'m',   'i\'ve', 
-             'will', 'just', 'at', 'this'  };
+             'will', 'just', 'at', 'this', 'that', 'so', 'very' , 'some', 'or', 'really' , 'it\'s', 'had',  'wasn\'t', 'as' , 
+             'been', 'his', 'her', 'our', 'did', 'there', 'i\'d', 'we', 'they', 'which', 'have', 'if', 'he', 'too', 'because', 
+             'could', 'say', 'all', 'them', 'us', 'would', 'one', 'when', 'up', 'were', 'also', 'about', 'got', 'any', 'through',
+             'their', 'put', 'way', 'able', 'than', 'set', 'lot', 'then', 'add', 'being', 'etc', 'always', 'yet', 'other', 'out',
+             'am', 'bit', 'ie', 'off', 're'};
 		return wordList.contains(text);
          
      }
