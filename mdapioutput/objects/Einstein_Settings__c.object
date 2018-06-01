@@ -2,8 +2,6 @@
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <customSettingsType>Hierarchy</customSettingsType>
     <enableFeeds>false</enableFeeds>
-    <label>Einstein Settings</label>
-    <visibility>Public</visibility>
     <fields>
         <fullName>CacheName__c</fullName>
         <externalId>false</externalId>
@@ -35,4 +33,6 @@
         <type>Email</type>
         <unique>false</unique>
     </fields>
+    <label>Einstein Settings</label>
+    <visibility>Public</visibility>
 </CustomObject>

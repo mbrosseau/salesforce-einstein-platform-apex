@@ -16,8 +16,10 @@
 	<ltng:require scripts="{!$Resource.lodash}" afterScriptsLoaded="{!c.doInit}" />
 
 	<c:LightningErrorHandler aura:id="leh" />
-
-		<lightning:card title="Create Dataset from Salesforce Data">
+     <div class="slds-card">
+<lightning:card title="Create Dataset from Salesforce Data" iconName="utility:signpost" variant="base" >
+	            <lightning:layout >
+            <lightning:layoutItem >
 			<div class="slds-p-around_medium">
 
 				<div class="slds-m-bottom_medium">
@@ -39,7 +41,7 @@
 
 				<aura:if isTrue="{!v.selectedObject}">
 					<div class="slds-m-bottom_medium">
-						<lightning:select label="What text field you want to classify?" value="{!v.selectedSourceField}">
+						<lightning:select label="What text field you want to classify?" value="{!v.selectedSourceField}" >
 							<option text="-- Select --" value="" />
 							<aura:iteration items="{!v.sourceFields}" var="field">
 								<option value="{!field.name}" text="{!field.label}" />
@@ -48,7 +50,7 @@
 					</div>
 
 					<div class="slds-m-bottom_medium">
-						<lightning:select label="Where are the existing classifications? (picklist/boolean)" value="{!v.selectedclassificationField}">
+						<lightning:select label="Where are the existing classifications? (picklist/boolean)" value="{!v.selectedclassificationField}" >
 							<option text="-- Select --" value="" />
 							<aura:iteration items="{!v.classificationFields}" var="field">
 								<option value="{!field.name}" text="{!field.label}" />
@@ -72,5 +74,18 @@
 					<lightning:button variant="neutral" label="Create Dataset" onclick="{! c.createDataset }" />
 				</aura:if>
 			</div>
+                    </lightning:layoutItem>
+                     <lightning:layoutItem >
+                
+                  <div class="slds-p-around_medium">
+
+  <!-- <c:WordCloud objectName="Case" fieldName="Subject"/> -->
+                     
+                        <c:WordCloud objectName="{!v.selectedObject}" fieldName="{!v.selectedSourceField}"/> 
+                         </div>
+                    </lightning:layoutItem>
+    </lightning:layout>
 		</lightning:card>
-</aura:component>
+        
+    </div>
+     </aura:component>
