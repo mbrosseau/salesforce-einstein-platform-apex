@@ -78,14 +78,19 @@
                      <lightning:layoutItem >
                 
                   <div class="slds-p-around_medium">
-
-  <!-- <c:WordCloud objectName="Case" fieldName="Subject"/> -->
-                     
-                        <c:WordCloud objectName="{!v.selectedObject}" fieldName="{!v.selectedSourceField}"/> 
+                     <c:WordCloud objectName="{!v.selectedObject}" fieldName="{!v.selectedSourceField}"/> 
+                   
+                    </div>
+                    </lightning:layoutItem>
+                     <lightning:layoutItem >   
+                         <div class="slds-p-around_medium">
+                           <c:Histogram objectName="{!v.selectedObject}" fieldName="{!v.selectedclassificationField}"/>
                          </div>
                     </lightning:layoutItem>
+
     </lightning:layout>
 		</lightning:card>
-        
+                                  
+
     </div>
      </aura:component>

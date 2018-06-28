@@ -1,0 +1,24 @@
+<aura:component controller="HistogramController">
+  
+    <aura:attribute name="objectName" type="String" />
+     <aura:attribute name="fieldName"  type="String" />
+      <aura:attribute name="rendered"  type="Boolean" default="false"/>
+     <aura:attribute name="data"  type="Map" />
+     <aura:attribute name="chart"  type="Object" />
+    
+	
+    <aura:handler name="change" value="{!v.fieldName}" action="{!c.onInitChart}"/> 
+    
+    <ltng:require scripts="{!join(',', $Resource.momentjs,  $Resource.chartJS )}"  afterScriptsLoaded="{!c.onInitChart }" />  
+     <!--   <ltng:require scripts="{!join(',', $Resource.d3517,  $Resource.c3 )}"
+                  styles="{!$Resource.c3css}"
+                  afterScriptsLoaded="{!c.onInitChart }" />  -->
+
+  <!-- <div id="chart"></div> -->
+    
+    <div  >
+	
+	</div>
+    <canvas id="myChart" width="400" height="400" ></canvas>
+    
+</aura:component>

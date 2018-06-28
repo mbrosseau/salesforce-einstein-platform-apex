@@ -301,6 +301,7 @@ public class Einstein_PlaygroundController {
 
 		ContentVersion CV = new ContentVersion();
 		CV.VersionData = blob.valueof(makeCSV(obj, src, classify));
+
 		CV.PathOnClient = obj +'-' + classify + '.csv';
 		CV.Title = obj +'_' + classify + '_by_' + src;
 
@@ -317,6 +318,9 @@ public class Einstein_PlaygroundController {
         ContentVersion CV = [select id from ContentVersion where ContentDocumentId =: contentDocumentId and isLatest = true];
 		ContentDistribution CD = new ContentDistribution();
 		CD.ContentVersionId = CV.Id;
+      
+        if(name.length() > 10 ) { name = name.left(10);}
+        
 		CD.Name = CD_TEMP_PREFIX + name;
 		CD.PreferencesAllowOriginalDownload = true;
 		CD.PreferencesLinkLatestVersion = true;

@@ -38,6 +38,7 @@
         <members>Einstein_TooManyValuesException</members>
         <members>Einstein_TrainParams</members>
         <members>Einstein_TrainStats</members>
+        <members>HistogramController</members>
         <members>ObjectDetectionController</members>
         <members>PB_Einstein_Image_Classification</members>
         <members>Test_Einstein</members>
@@ -69,6 +70,7 @@
         <members>EventEinsteinDatasetRefresh</members>
         <members>EventEinsteinModels</members>
         <members>EventEinsteinWaiting</members>
+        <members>Histogram</members>
         <members>LightningErrorHandler</members>
         <members>MOCK_svg</members>
         <members>ShelfScanCompleted</members>
@@ -119,11 +121,13 @@
         <name>RemoteSiteSetting</name>
     </types>
     <types>
+        <members>chartJS</members>
         <members>jQuery321</members>
         <members>jqcloud</members>
         <members>lodash</members>
+        <members>momentjs</members>
         <members>resize</members>
         <name>StaticResource</name>
     </types>
-    <version>42.0</version>
+    <version>43.0</version>
 </Package>
