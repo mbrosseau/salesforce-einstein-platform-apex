@@ -84,10 +84,6 @@
         <name>AuraDefinitionBundle</name>
     </types>
     <types>
-        <members>Einstein_Platform1</members>
-        <name>ContentAsset</name>
-    </types>
-    <types>
         <members>Einstein_Demo</members>
         <name>CustomApplication</name>
     </types>
