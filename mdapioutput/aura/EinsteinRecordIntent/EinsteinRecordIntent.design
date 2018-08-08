@@ -1,6 +1,0 @@
-<design:component label="Einstein Platform - Language">
-	 <design:attribute name="cardLabel" label="Title" required="false" default="Einstein Language"/>
-    <design:attribute name="modelId" label="Model Id" required="true" default="Sentiment"/>
-     <design:attribute name="fieldName" label="Field to be Analyzed" required="true"/>
-     <design:attribute name="saveToField" label="Field to save result to" required="false"/>
-</design:component>

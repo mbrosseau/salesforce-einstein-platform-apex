@@ -1,0 +1,93 @@
+<aura:component controller="Einstein_PlaygroundController" extends="c:EinsteinPlaygroundBase" >
+    <aura:attribute name="fileUrl" type="String" />
+    <aura:attribute name="filesAllowed" type="String"/>
+      <aura:attribute name="userId" type="String" />
+    
+    <aura:attribute name="dataset" type="object" access="public"  />
+    <aura:attribute name="iconName" type="String" />  
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="selectedButton" type="String" default="url" />
+    <aura:registerEvent name="waitingEvent" type="c:EventEinsteinWaiting" />
+    
+    <c:LightningErrorHandler aura:id="leh"/>
+   
+    <div>
+        <div class="paddedGroup">
+            <div class="btnGroup">
+                <lightning:buttonGroup >
+                   <aura:if isTrue="{!v.dataset.type == 'text-intent'}"> 
+                    <lightning:button label="Send Single" variant="{!v.selectedButton == 'single' ? 'brand' : 'neutral'}"  onclick="{! c.selectSingle }"  />
+                    </aura:if>
+                       <lightning:button label="Send File"  variant="{!v.selectedButton == 'file' ? 'brand' : 'neutral'}" onclick="{!c.selectFile}"/>
+                    <lightning:button label="Send URL"  variant="{!v.selectedButton == 'url' ? 'brand' : 'neutral'}"  onclick="{!c.selectUrl}"/>
+                </lightning:buttonGroup>
+                <hr/>
+            </div>
+            
+            <div class="contentGroup">
+                
+                <aura:if isTrue="{!v.selectedButton == 'single'}">
+                    <aura:if isTrue="{!v.dataset.type == 'text-intent'}">          
+                        <c:EinsteinLanguageFeedback dataset="{!v.dataset}" modelList="{!v.modelList}" iconName="{!v.iconName}" />
+                    </aura:if>
+                    
+                    <aura:if isTrue="{!v.dataset.type == 'image'}">               
+                         <c:EinsteinVisionFeedback dataset="{!v.dataset}" modelList="{!v.modelList}"/>
+                                      
+                    </aura:if>
+                </aura:if> 
+                <aura:if isTrue="{!v.selectedButton == 'file'}">
+                    <lightning:card title="Update Dataset from File" iconName="{!v.iconName}" variant="base" >
+                        <aura:set attribute="actions">
+                            <lightning:button onclick="{!c.onUpdateDatasetFromZip}">Update</lightning:button>
+                        </aura:set>
+                        <aura:set attribute="footer">
+                            <!--footer markup-->
+                        </aura:set>
+                        <div class="slds-p-horizontal_medium">
+                            <lightning:fileUpload label="Upload examples" multiple="false" accept="{!v.filesAllowed}" recordId="{!v.userId}" onuploadfinished="{!c.handleUploadFinished}"/>
+                        </div>
+                    </lightning:card>
+                </aura:if>
+                <aura:if isTrue="{!v.selectedButton == 'url'}">
+                    
+                    <lightning:card title="Update Dataset from URL"  iconName="{!v.iconName}" variant="base">
+                        <aura:set attribute="actions">
+                            <lightning:button onclick="{!c.onUpdateDatasetFromURL}">Update</lightning:button>
+                        </aura:set>
+                        <aura:set attribute="footer">
+                            <!--footer markup-->
+                        </aura:set>
+                        <div class="slds-p-horizontal_medium">
+                            <lightning:layoutitem flexibility="grow">
+                                <lightning:input type="URL" label="File url:" aura:id="fileUrl" value="{!v.fileUrl}" />
+                            </lightning:layoutitem>
+                        </div>
+                    </lightning:card>
+                    
+                </aura:if>
+                
+                
+                
+                <aura:if isTrue="{!v.dataType == 'text-intent'}">
+                    
+                    <lightning:card title="Upate Single Item"  iconName="utility:signpost" variant="base">
+                        <aura:set attribute="actions">
+                            <lightning:button onclick="{!c.onUpdateDataset}">Update</lightning:button>
+                        </aura:set>
+                        <aura:set attribute="footer">
+                            <!--footer markup-->
+                        </aura:set>
+                        <div class="slds-p-horizontal_medium">
+                            <lightning:layoutitem flexibility="grow">
+                                <lightning:input type="text" label="Content" /><lightning:input type="text" label="Label" />
+                            </lightning:layoutitem>
+                        </div>
+                    </lightning:card>
+                </aura:if>
+                
+            </div>
+        </div>
+    </div>
+    
+</aura:component>

@@ -1,0 +1,41 @@
+<aura:component extends="c:EinsteinPlaygroundBase"  >
+    <aura:attribute name="dataset" type="Einstein_Dataset" />
+  
+    <aura:attribute name="pictureSrc" type="String" default="{!$Resource.EinsteinVIsionDefault }"/>
+    <aura:attribute name="fileData" type="String"/>
+     <aura:attribute name="userId" type="String"/>
+    <aura:attribute name="message" type="String" default="Drag picture here"/>
+    <aura:attribute name="probability" type="Decimal" default="0"/>
+    <aura:attribute name="prediction" type="String" default=""/>
+    <aura:attribute name="label" type="String" />
+     <aura:attribute name="modelId" type="String" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+  
+        <c:EinsteinVisionOutput modelId="{!v.modelId}" recordId="{!v.userId}" attachImage="true" pictureSrc="{!v.pictureSrc}"/>
+   
+    
+    <div class="slds-tile slds-p-top_large">
+                        <div class="slds-tile__detail slds-text-body--small">
+                           
+                            <lightning:select  aura:id="selectModel" name="models" label="Model:" onchange="{!c.onModelChange}" >
+                                <aura:iteration items="{!v.modelList}" var="item">
+                                        <option text="{!item.modelId}"  value="{!item.modelId}"></option>
+                                    </aura:iteration>
+                            </lightning:select>
+                            
+                            <lightning:select aura:id="selectedLabel" name="labels" label="Select a Label" onchange="{!c.onLabelChange}">
+                                <aura:iteration items="{!v.dataset.labelSummary.labels}" var="label">
+                                    <option value="{!label.name}" text="{!label.name}"></option>             
+                                </aura:iteration>
+                            </lightning:select>
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="container">
+                            <lightning:button   variant="brand" label="Send Example" title="Send Example" onclick="{! c.sendFeedback }" />
+
+                    </div>
+
+</aura:component>

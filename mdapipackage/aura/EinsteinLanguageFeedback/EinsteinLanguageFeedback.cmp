@@ -1,0 +1,43 @@
+<aura:component controller="Einstein_PlaygroundController" extends="c:EinsteinPlaygroundBase">
+    <aura:attribute name="dataset" type="Einstein_Dataset" />
+    
+    
+    <aura:attribute name="intentPhrase" type="String" />
+     <aura:attribute name="iconName" type="String" />
+    
+  
+    <aura:attribute name="label" type="String" />
+    
+     <lightning:layout>
+    <lightning:layoutitem size="12"  padding="horizontal-small">
+ 
+          <lightning:card title="Update Single Example" iconName="{!v.iconName}" variant="base">
+			<aura:set attribute="actions">
+				<lightning:button onclick="{!c.onUpdateDataset}">Send</lightning:button>
+			</aura:set>
+			<aura:set attribute="footer">
+				<!--footer markup-->
+			</aura:set>
+		
+     <lightning:select aura:id="selectedModel" name="select" label="Select a Model" onchange="{!c.modelChanged}">
+                <aura:iteration items="{!v.modelList}" var="item">
+                    <option value="{!item.modelId}" text="{!item.modelId}"></option>             
+                </aura:iteration>
+            </lightning:select>
+              
+               <lightning:select aura:id="selectedLabel" name="select" label="Select a Lavel" onchange="{!c.labelChanged}">
+               <aura:iteration items="{!v.dataset.labelSummary.labels}" var="label">
+                    <option value="{!label.name}" text="{!label.name}"></option>             
+                </aura:iteration>
+            </lightning:select>
+              
+         
+               <div class="formItem">
+    			<ui:inputTextArea aura:id="phrase" label="Phrase" rows="5"/>
+              </div>
+        	
+		</lightning:card>      
+              
+         </lightning:layoutitem>
+    </lightning:layout>
+</aura:component>

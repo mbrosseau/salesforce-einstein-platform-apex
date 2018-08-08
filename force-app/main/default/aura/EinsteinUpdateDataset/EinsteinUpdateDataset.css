@@ -1,0 +1,17 @@
+.THIS .paddedGroup {
+     padding: 0px 10px 0px 10px;
+}
+
+
+
+.THIS .contentGroup {
+    border-style: solid;
+    border-width: 1px;
+     border-color: #d6d6d6;
+    border-radius: 5px;
+   
+}
+
+.THIS hr {
+    margin: 1rem 0;
+}
