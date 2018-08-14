@@ -3,6 +3,9 @@
     var action = component.get("c.getModels");
     var dataset = component.get("v.dataset");
     if (!dataset.available){
+        
+        let models = null;
+        component.set("v.models", models);
       return;
     }
     var datasetType = dataset.type;
@@ -37,6 +40,7 @@
         });
         event.fire();
       } else {
+          component.set("v.models", null);
         console.log("No model.");
       }
     });

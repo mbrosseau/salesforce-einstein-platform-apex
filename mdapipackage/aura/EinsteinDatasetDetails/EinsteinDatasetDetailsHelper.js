@@ -43,9 +43,10 @@
         //getDataset(Long datasetId, String dataType)
         var action = component.get("c.getDataset");
         var dataset = component.get("v.dataset");
-        if (!dataset.available){
+        /*if (!dataset.available){
+            console.log("Dataset not available yet");
             return;
-        }
+        }*/
         var datasetType = dataset.type;
         
         var helper = this;

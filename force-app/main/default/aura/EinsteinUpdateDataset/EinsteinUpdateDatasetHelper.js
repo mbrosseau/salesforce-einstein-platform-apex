@@ -1,7 +1,8 @@
 ({
 	 updateDatasetWithUrl: function (component) {
         var action = component.get("c.updateDatasetFromUrl");
-        var url = component.find("fileUrl").get("v.value");
+       // var url = component.find("fileUrl").get("v.value");
+        var url = component.get("v.fileUrl");
          var dataset = component.get("v.dataset");
         var dataType = dataset.type;
               

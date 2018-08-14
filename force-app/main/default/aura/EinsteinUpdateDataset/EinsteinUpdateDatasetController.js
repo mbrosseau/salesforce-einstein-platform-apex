@@ -57,7 +57,7 @@
                 console.log(a.getReturnValue());
                 //then set this as the url, then call Einstein to pick it up
                 component.set("v.fileUrl", a.getReturnValue().ContentDownloadUrl);
-                helper.onUpdateDataset(component);
+                helper.updateDatasetWithUrl(component);
             } else if (state === "ERROR") {
                 console.log(a.getError());
                 component.find("leh").passErrors(a.getError());
