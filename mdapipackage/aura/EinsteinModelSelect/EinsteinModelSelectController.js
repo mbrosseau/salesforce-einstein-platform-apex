@@ -51,6 +51,20 @@
         
     },
     
+     modelUpdated : function(component, event, helper) {
+      
+   console.log("modelSelect");
+    	var modelSelect =  component.find("modelSelect");
+         console.log(modelSelect);
+        var modelId = modelSelect.get("v.value");;
+        console.log(modelId);
+         
+        component.set("v.modelId", modelId);
+          console.log(component.get("v.modelId"));
+        
+    },
+    
+    
     valueChanged : function(component, event, helper) {
         component.set("v.modelId", component.find("selectModel").get("v.value"));
     },

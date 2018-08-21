@@ -42,7 +42,7 @@
         var action2 = component.get("c.getObjectCount");	
     	action2.setParams({
 			"objectName" : objName
-		});
+		}); 
         
     	action2.setCallback(this, function(a) {
             if (a.getState() === "SUCCESS") {

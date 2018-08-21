@@ -21,6 +21,8 @@
          var objectName = component.get("v.selectedObject");
        
          var overwrite =  component.get("v.overwriteValues"); 
+         var ignoreErrors = component.get("v.ignoreErrors"); 
+         
       
         var endPos = startPos + BATCH_SIZE;
         console.log("Sending " + modelId + " " + sourceName  + " " + destinationName + " " + objectName );  
@@ -34,7 +36,8 @@
             objectName : objectName,
             batchSize : BATCH_SIZE,
              overwriteValues: overwrite,
-             latestId: lastId
+             latestId: lastId,
+             ignoreErrors, ignoreErrors
         });
   
     	action.setCallback(this, function(a) {
@@ -62,10 +65,10 @@
                 $A.log("Errors", a.getError());
                 this.handleErrors(a.getError());
             }
-            helper.changeSpinner(component);
+        //    helper.changeSpinner(component);
    		});
 
-        helper.changeSpinner(component);
+     //   helper.changeSpinner(component);
     	$A.enqueueAction(action);
         
     }

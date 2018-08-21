@@ -18,11 +18,16 @@ public with sharing class Einstein_Invocable_Language {
 		list<ID> lrIDs = new list<ID>();
 		list<string> fields = new list<string>();
 
+        Map<string,string> fieldMap = new  Map<string,string>();
+        
 		for (LanguageRequest LR:deduped){
 			lrIDs.add(LR.recordId);
-			fields.add(LR.FieldToAnalyze);
+			//fields.add(LR.FieldToAnalyze);
+           fieldMap.put(LR.FieldToAnalyze,LR.FieldToAnalyze);
 		}
 
+        fields = fieldMap.values();
+            
 		string objType = id.valueOf(deduped[0].recordId).getSObjectType().getDescribe().getName();
 		string soql = 'select id, ' + string.join(fields, ', ') + ' from ' + objType +' where id in: lrIDs';
 		system.debug(soql);
@@ -124,6 +129,7 @@ public with sharing class Einstein_Invocable_Language {
 		}
 
 		list<sobject> output = recordMap.values();
+        system.debug(output);
 		update output;
 
 	}

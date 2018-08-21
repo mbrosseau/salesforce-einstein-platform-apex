@@ -5,7 +5,8 @@
 	<aura:attribute name="selectionModels" type="List" />
 
 	<aura:attribute name="modelId" type="String"  /> 
-
+ 
+    
  <!--   <aura:attribute name="datasetList" type="object[]"/>
     <aura:attribute name="datasetId" type="string" default=""/> -->
     <aura:attribute name="selectedDatasetId" type="string" default=""/>
@@ -34,10 +35,12 @@
    			</aura:if>
                 <aura:if isTrue="{!and(and( v.selectedDatasetId != 'CommunitySentiment', v.modelId != ''), v.selectedDatasetId != '') }">
                 <div class="slds-m-bottom--medium">
-					<lightning:select label="Select a source Model" value="{!v.modelId}" >
-						<option text="-- Select --" value=""/>
-						<aura:iteration items="{!v.modelList}" var="object">
-							<option value="{!object.modelId}" text="{!object.modelId}"/>
+                   
+                   
+                    <lightning:select name="modelSelect" aura:id="modelSelect" label="Select a source Model" value="{!v.modelId}">
+						<option text="-- Select --" />
+						<aura:iteration items="{!v.modelList}" var="model">
+							<option value="{!model.modelId}" text="{!model.modelId}"/>
 						</aura:iteration>
 					</lightning:select>
 				</div>

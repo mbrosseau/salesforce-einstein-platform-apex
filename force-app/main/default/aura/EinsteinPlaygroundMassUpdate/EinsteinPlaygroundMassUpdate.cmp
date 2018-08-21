@@ -29,14 +29,14 @@
 			<div class="slds-p-around--medium">
                  <div class="slds-m-bottom--medium">
 					<lightning:input type="checkbox" label="Overwrite Existing Values" name="overwrite" aura:id="overwrite" checked="{!v.overwriteValues}" />
-					<lightning:input type="checkbox" label="Ignore Errors" name="ignoreErrors" aura:id="ignoreErrors" checked="{!v.overwriteValues}" />
+					<lightning:input type="checkbox" label="Ignore Errors" name="ignoreErrors" aura:id="ignoreErrors" checked="{!v.ignoreErrors}" />
 
 				</div>
                 <div class="slds-m-bottom--medium">
 
 				</div>
-        
-       <c:EinsteinModelSelect dataType="{!v.dataType}" modelId="{!v.modelId}"/>
+             
+       <c:EinsteinModelSelect dataType="{!v.dataType}" modelId="{!v.selectedModel}"/>
                  
 				<div class="slds-m-bottom--medium">
 					<lightning:select label="Select an Object" value="{!v.selectedObject}" onchange="{!c.getFields}">

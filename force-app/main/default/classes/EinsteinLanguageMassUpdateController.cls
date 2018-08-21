@@ -74,12 +74,14 @@ public class EinsteinLanguageMassUpdateController {
     }
 
   @AuraEnabled
-    public static String goClassify( String sourceName, String destinationName, String objectName, Integer batchSize, String modelId,  String overwriteValues, String latestId) {
+    public static String goClassify( String sourceName, String destinationName, String objectName, Integer batchSize, String modelId,  String overwriteValues, String latestId, String ignoreErrors) {
          
 
         System.debug('---- Started Classification ----');
          Boolean overwrite = Boolean.valueOf(overwriteValues);
-        System.debug(modelId + ' '  + latestId + ' ' + batchSize  + ' ' + overwrite);
+        Boolean ignoreErrorVal = Boolean.valueOf(ignoreErrors);
+        
+        System.debug(modelId + ' '  + latestId + ' ' + batchSize  + ' ' + overwrite  + ' ' + ignoreErrorVal);
       //  System.debug( overwriteValues);
   
        Integer maxSize = Integer.valueOf(batchSize);
@@ -108,7 +110,9 @@ public class EinsteinLanguageMassUpdateController {
               
                    if((overwrite || existingValue == null || existingValue.length() ==0) && (text != null && text.length() >0) ) {
                       
-                 
+                       try {
+                           
+                       
                         Einstein_PredictionResult predictionList = null;
                        if(modelId == 'CommunitySentiment') {
                          	predictionList = service.predictSentiment(modelId, text, 2, null);
@@ -119,7 +123,7 @@ public class EinsteinLanguageMassUpdateController {
                         String label = '';
                        
                        
-                        if (service.httpStatusCode>200) {
+                        if (service.httpStatusCode>200 && ignoreErrorVal == false) {
                             throw new AuraHandledException('API http error:' + service.httpErrorMessage);
                         }
                                     
@@ -135,7 +139,12 @@ public class EinsteinLanguageMassUpdateController {
                         obj.put(destinationName, label);
                  
                         shortList.add(obj);
-                       
+                       } catch(Exception e) {
+                           System.debug(e);
+                           if(ignoreErrorVal == false) {
+                               throw new AuraHandledException(e.getMessage());
+                           }
+                       }
                     }
                 }
             System.debug('---- Saving List ' + shortList.size() + ' ----');
