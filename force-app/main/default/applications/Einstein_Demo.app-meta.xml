@@ -14,24 +14,6 @@
     <navType>Standard</navType>
     <profileActionOverrides>
         <actionName>View</actionName>
-        <content>File</content>
-        <formFactor>Large</formFactor>
-        <pageOrSobjectType>Einstein_Platform_Account__c</pageOrSobjectType>
-        <recordType>Einstein_Platform_Account__c.File</recordType>
-        <type>Flexipage</type>
-        <profile>Admin</profile>
-    </profileActionOverrides>
-    <profileActionOverrides>
-        <actionName>View</actionName>
-        <content>Certificate</content>
-        <formFactor>Large</formFactor>
-        <pageOrSobjectType>Einstein_Platform_Account__c</pageOrSobjectType>
-        <recordType>Einstein_Platform_Account__c.Cert</recordType>
-        <type>Flexipage</type>
-        <profile>Admin</profile>
-    </profileActionOverrides>
-    <profileActionOverrides>
-        <actionName>View</actionName>
         <content>Pardot_Lead_Record_Page</content>
         <formFactor>Large</formFactor>
         <pageOrSobjectType>Lead</pageOrSobjectType>
