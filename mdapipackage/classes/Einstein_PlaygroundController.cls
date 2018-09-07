@@ -25,59 +25,154 @@ public class Einstein_PlaygroundController {
     public static id getMyUserId(){
         return UserInfo.getUserId();
     }
+    
+   
 
     @AuraEnabled
     public static String getModelMetrics(string modelId, string dataType){
+        try {
         setType(dataType);
         String metrics = service.getModelMetrics(modelId);
         if (service.httpStatusCode>200) {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return metrics;
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled
     public static String getLearningCurves(string modelId, string dataType){
+        try {
         setType(dataType);
         String curves = service.getModelLearningCurve(modelId);
         if (service.httpStatusCode>200) {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return curves;
+             } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled
     public static List<Einstein_ApiUsage> getUsage() {
+         try {
         setType('image'); //default
         List<Einstein_ApiUsage> usage = service.getApiUsage();
         if (service.httpStatusCode>200) {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return usage;
+         } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
+    @AuraEnabled
+    public static void saveSettings(Einstein_Settings__c settings){
+        update settings;
+    }
+    
+    
+   @AuraEnabled
+    public static Map<String, String> validateSetup() {
+        Map<String, String> setupInfo = new  Map<String, String>();
+        String status = 'Working';
+        String message = null;
+        
+		// double check settings are complete
+		 Einstein_Settings__c settings = Einstein_Settings__c.getOrgDefaults();
+        
+        if(settings.Einstein_EMail__c ==  null) {
+            status = 'Configuration Incomplete';
+            message = 'Please enter the Einstein Platform Account email address';
+        }
+        
+         if(settings.CertName__c  ==  null) {
+            status = 'Configuration Incomplete';
+            message = 'Please ensure the authentication settings have been completed.';
+        }
 
+        
+        // make an outbound call
+        try {
+        setType('image'); //default
+            List<Einstein_ApiUsage> usage = service.getApiUsage();
+            if (service.httpStatusCode>200) {
+                status = 'Connection Error';
+           		 message = service.httpErrorMessage;
+            }
+       
+        } catch(Exception e) {
+            status = 'Connection Error';
+            message = e.getMessage();
+             
+        }
+        
+        setupInfo.put('status', status);
+         setupInfo.put('message', message);
+        
+        return setupInfo;
+    }
+        
+     @AuraEnabled
+    public static String getPemFileId(){
+        Einstein_Settings__c settings = Einstein_Settings__c.getOrgDefaults();
+
+ 		String tokenFileName = settings.CertName__c;
+	         
+                if (settings.Authentication_Type__c  == 'pem file') {
+                    
+                   ContentVersion base64Content;
+                    // Try to retrieve certificate
+                    
+                    try {
+                        base64Content = [SELECT id FROM ContentVersion where Title=: tokenFileName AND IsLatest=true order by CreatedDate DESC LIMIT 1];
+                        return base64Content.id;
+                    } catch (QueryException e) {
+                        throw new Einstein_ConfigurationException('Could not retrieve the Einstein Platform certificate file: ' + tokenFileName , e);
+                    }  
+                }
+        
+        return null;
+    }
+    
     @AuraEnabled
     public static void createDatasetFromUrl(String url, String dataType) {
+         try {
         setType(dataType);
         service.createDatasetFromUrlAsync(url);
         if (service.httpStatusCode>200) {
             throw new AuraHandledException(service.httpErrorMessage);
         }
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
     
     @AuraEnabled
     public static Einstein_Example createFeedbackLanguageExample(String expectedLabel, String modelId, String text) {
+        try {
         setType('text-intent');
         Einstein_Example example = service.createFeedbackLanguageExample( expectedLabel,  modelId,  text);
         if (service.httpStatusCode>200) {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return example;
-       
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
     
    @AuraEnabled
     public static Einstein_Example createVisionExample(String name, String expectedLabel, String modelId, String url ) {
+        try {
         setType('image');
         System.debug('Create Example - ' + modelId + ' ' + expectedLabel + ' ' + name + ' ');
         url = 'https://s3-us-west-2.amazonaws.com/sdodemo-main-15d/slider-4-2.jpg';
@@ -86,11 +181,16 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return example;
+         } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
 
     }
     
     @AuraEnabled
     public static Einstein_Dataset updateDatasetFromUrl(Long datasetId, String url, String dataType) {
+        try {
         setType(dataType);
         System.debug('Create Example - ' + datasetId + ' ' + dataType + ' ' + url + ' ');
       
@@ -99,6 +199,10 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return dataset;
+         } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
 
     }
     
@@ -131,7 +235,7 @@ public class Einstein_PlaygroundController {
     
      @AuraEnabled
     public static Einstein_Dataset getDataset(Long datasetId, String dataType) {
-       
+        try {
         Einstein_Dataset dataset = null;
         try {
             
@@ -151,32 +255,48 @@ public class Einstein_PlaygroundController {
           }
          
         return dataset;
+         } catch (Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }  
             
     }
 
     @AuraEnabled
     public static List<Einstein_Model> getModels(Long datasetId, String dataType) {
+         try {
         setType(dataType);
         Einstein_Model[] models = service.getModels(datasetId);
         if (service.httpStatusCode>200) {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return models;
+         } catch (Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }  
     }
 
     @AuraEnabled
     public static String trainDataset(Decimal datasetId, String modelName, String dataType) {
+        
+        try {
+        
         setType(dataType);
         Einstein_Model model = service.trainDataset(datasetId.longValue(), modelName, 0, 0, null);
         if (service.httpStatusCode>200) {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return model.modelId;
+        }  catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled
     public static String retrainDataset(String modelId, String dataType) {
-           
+           try { 
         System.debug(dataType);
         setType(dataType);
         Einstein_Model model = service.retrainDataset(modelId, 10, 0, null);
@@ -184,21 +304,30 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return model.modelId;
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled
     public static void deleteDataset(Long datasetId, String dataType) {
          
-        
+         try {
         setType(dataType);
         service.deleteDataset(datasetId);
         if (service.httpStatusCode>200) {
             throw new AuraHandledException(service.httpErrorMessage);
         }
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled
     public static Einstein_PredictionResult predictImageClassification(String modelId, String base64) {
+        try {
         System.debug(modelId + ' ' + base64.length());
         
         setType('');
@@ -208,10 +337,15 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return result;
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled
     public static Einstein_PredictionResult predictImageClassificationURL(String modelId, String url) {
+        try {
         setType('');
         service.setType(Einstein_PredictionService.Types.IMAGE);
         Einstein_PredictionResult result = service.predictImageUrl(modelId, url, 0, '');
@@ -219,10 +353,15 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return result;
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled
     public static Einstein_PredictionResult predictImageDetection(String modelId, String base64) {
+         try {
         setType('');
         service.setType(Einstein_PredictionService.Types.IMAGE_DETECTION);
         Einstein_PredictionResult result = service.detectImageBase64(modelId, base64, 0, '');
@@ -230,10 +369,15 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return result;
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled
     public static Einstein_PredictionResult predictImageDetectionURL(String modelId, String url) {
+        try {
         setType('');
         service.setType(Einstein_PredictionService.Types.IMAGE_DETECTION);
         Einstein_PredictionResult result = service.detectImageUrl(modelId, url, 0, '');
@@ -241,12 +385,17 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return result;
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
 
 
     @AuraEnabled
     public static Einstein_PredictionResult predictIntent(String modelId, String phrase) {
+        try {
         setType('');
         service.setType(Einstein_PredictionService.Types.INTENT);
         Einstein_PredictionResult result = service.predictIntent(modelId, phrase, 0, '');
@@ -254,10 +403,15 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return result;
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
     @AuraEnabled
     public static Einstein_PredictionResult predictSentiment(String modelId, String phrase) {
+        try {
         setType('');
         service.setType(Einstein_PredictionService.Types.SENTIMENT);
         Einstein_PredictionResult result = service.predictSentiment(modelId, phrase, 0, '');
@@ -265,11 +419,15 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return result;
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
     }
 
      @AuraEnabled
     public static  Einstein_Example[] getExamples(Long datasetId, String dataType, Integer count, Integer offset) {
-            
+           try {  
         setType(dataType);
         Einstein_Example[] result = service.getExamples(datasetId,  count, offset, Einstein_Example.Types.ALL) ;
         
@@ -278,9 +436,19 @@ public class Einstein_PlaygroundController {
             throw new AuraHandledException(service.httpErrorMessage);
         }
         return result;
+        } catch(Exception e) {
+            System.debug(e);
+            throw new AuraHandledException(e.getMessage());
+        }
   
 	}
     
+    
+    @AuraEnabled
+    public static Einstein_Settings__c getSettings() {
+        Einstein_Settings__c settings = Einstein_Settings__c.getOrgDefaults();
+        return settings;
+    }
     
     @AuraEnabled
     public static Map<String, Boolean> validateEinsteinPlatformSetup() {

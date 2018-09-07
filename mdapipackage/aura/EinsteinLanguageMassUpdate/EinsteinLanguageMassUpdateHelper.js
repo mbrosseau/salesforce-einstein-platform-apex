@@ -19,13 +19,12 @@
          var sourceName = component.get("v.selectedSourceField");
          var destinationName = component.get("v.selectedDestinationField");
          var objectName = component.get("v.selectedObject");
-       
-         var overwrite =  component.get("v.overwriteValues"); 
+       	var dataType = component.get("v.dataType");
          
-        //  console.log("overwrite cmp");
-       //  console.log(overwrite);
-          
- 
+         var overwrite =  component.get("v.overwriteValues"); 
+         var ignoreErrors = component.get("v.ignoreErrors"); 
+         
+      
         var endPos = startPos + BATCH_SIZE;
         console.log("Sending " + modelId + " " + sourceName  + " " + destinationName + " " + objectName );  
         console.log("Moving to " + startPos + " " + endPos);   
@@ -38,7 +37,9 @@
             objectName : objectName,
             batchSize : BATCH_SIZE,
              overwriteValues: overwrite,
-             latestId: lastId
+             latestId: lastId,
+             ignoreErrors, ignoreErrors,
+             dataType: dataType
         });
   
     	action.setCallback(this, function(a) {
@@ -66,26 +67,11 @@
                 $A.log("Errors", a.getError());
                 this.handleErrors(a.getError());
             }
+        //    helper.changeSpinner(component);
    		});
 
-    
+     //   helper.changeSpinner(component);
     	$A.enqueueAction(action);
         
-    },
-   handleErrors : function(errors) {
-        // Configure error toast
-        let toastParams = {
-            title: "Error",
-            message: "Unknown error", // Default error message
-            type: "error"
-        };
-        // Pass the error message if any
-        if (errors && Array.isArray(errors) && errors.length > 0) {
-            toastParams.message = errors[0].message;
-        }
-        // Fire error toast
-        let toastEvent = $A.get("e.force:showToast");
-        toastEvent.setParams(toastParams);
-        toastEvent.fire();
     }
 })

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <fullName>Status__c</fullName>
+    <externalId>false</externalId>
+    <label>Status</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Incomplete Setup</fullName>
+                <default>true</default>
+                <label>Incomplete Setup</label>
+            </value>
+            <value>
+                <fullName>Incorrect Setup</fullName>
+                <default>false</default>
+                <label>Incorrect Setup</label>
+            </value>
+            <value>
+                <fullName>Connection Available</fullName>
+                <default>false</default>
+                <label>Connection Available</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

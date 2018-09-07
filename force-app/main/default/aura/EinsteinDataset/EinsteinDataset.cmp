@@ -27,8 +27,10 @@
     <div class="">
         <lightning:card class="padded" title="{!v.dataset.name}" iconName="{!v.iconName}">
 
-            <aura:set attribute="actions">
-                 <lightning:button label="Details" onclick="{!c.onViewDetails}" />
+            <aura:set attribute="actions"> 
+                   <lightning:buttonIcon iconName="utility:zoomin" variant="border-filled" onclick="{!c.onViewDetails}" alternativeText="View Details" />
+
+                 
               <!--  <aura:if isTrue="{!v.currentTab=='labels'}">      
                     <aura:if isTrue="{!and ( v.models.length>0 , v.models[0].status=='SUCCEEDED')}">
                         <lightning:button variant="brand" label="Retrain" onclick="{!c.onReTrainModel}" />
@@ -37,7 +39,9 @@
                     <lightning:button label="Delete" onclick="{!c.onDeleteDataset}" />
                 </aura:if> -->
                 <aura:if isTrue="{!v.currentTab=='models'}">
-                    <lightning:button label="Refresh Models" onclick="{!c.onRefresh}" />
+                   
+                   <lightning:buttonIcon iconName="utility:refresh" variant="border-filled" onclick="{!c.onRefresh}" alternativeText="Refresh Models" />
+ 
                 </aura:if>
             </aura:set>
 
@@ -128,7 +132,9 @@
                                     </td>
                                     <td data-label="Metrics">
                                         <aura:if isTrue="{!model.status=='SUCCEEDED'}">
-                                            <lightning:button variant="base" label="Metrics" onclick="{!c.openMetrics}" name="{!model.modelId}"/>
+                                           <!-- <lightning:button variant="base" label="Metrics" onclick="{!c.openMetrics}" name="{!model.modelId}"/> -->
+                                             <lightning:buttonIcon iconName="utility:trending" variant="border-filled" onclick="{!c.openMetrics}" name="{!model.modelId}" alternativeText="Model Metrics" />
+
                                         </aura:if>
                                         <aura:if isTrue="{!model.status=='FAILED'}">
                                             <lightning:helptext content="{!model.failureMsg}"/>

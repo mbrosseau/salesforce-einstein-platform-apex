@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <fullName>Cert</fullName>
+    <active>true</active>
+    <label>Cert</label>
+    <picklistValues>
+        <picklist>Status__c</picklist>
+        <values>
+            <fullName>Connection Available</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Incomplete Setup</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Incorrect Setup</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

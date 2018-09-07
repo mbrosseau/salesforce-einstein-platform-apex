@@ -1,6 +1,7 @@
 <aura:component controller="Einstein_PlaygroundController" extends="c:EinsteinPlaygroundBase">
 
     <aura:attribute name="dataset" type="Einstein_Dataset" />
+     <aura:attribute name="selectedModel" type="String" default=""/>
    
     <aura:attribute name="currentTab" type="String" default="labels" />
     <aura:attribute name="iconName" type="string" default="utility:preview"/>
@@ -46,11 +47,14 @@
 
             <aura:set attribute="actions">
                 <aura:if isTrue="{!v.currentTab=='labels'}">   
-                     <lightning:button label="Refresh Dataset" onclick="{!c.onRefreshDataset}" />
+                   
+                   <lightning:buttonIcon iconName="utility:refresh" variant="border-filled" onclick="{!c.onRefreshDataset}" alternativeText="Refresh Dataset" />
+
                 </aura:if>
                 
              <aura:if isTrue="{!v.currentTab=='models'}">
-                    <lightning:button label="Refresh Models" onclick="{!c.onRefresh}" />
+                    
+                  <lightning:buttonIcon iconName="utility:refresh" variant="border-filled" onclick="{!c.onRefresh}" alternativeText="Refresh Models" />
                 </aura:if>
                
                 
@@ -133,7 +137,9 @@
                                     </td>
                                     <td data-label="Metrics">
                                         <aura:if isTrue="{!model.status=='SUCCEEDED'}">
-                                            <lightning:button variant="base" label="Metrics" onclick="{!c.openMetrics}" name="{!model.modelId}"/>
+                                            
+                                             <lightning:buttonIcon iconName="utility:trending" variant="border-filled" onclick="{!c.openMetrics}" name="{!model.modelId}" alternativeText="Model Metrics" />
+
                                         </aura:if>
                                         <aura:if isTrue="{!model.status=='FAILED'}">
                                             <lightning:helptext content="{!model.failureMsg}"/>
@@ -158,20 +164,30 @@
                         Predict 
                     </aura:set>
 
-                       <aura:if isTrue="{!v.dataset.type == 'image' || v.dataset.type == 'image-multi-label' || v.dataset.type == 'image-detection'}">
+                       <aura:if isTrue="{!v.dataset.type == 'image' || v.dataset.type == 'image-multi-label'}">
             				<c:EinsteinVisionOutput dataset="{!v.dataset}" modelList="{!v.modelList}"/>
                         </aura:if>
                       <aura:if isTrue="{!v.dataType == 'text-intent'}">
                         <c:EinsteinDatasetDetailsIntent dataset="{!v.dataset}" modelList="{!v.modelList}"/>
                    
                         </aura:if>
+                        <aura:if isTrue="{!v.dataType == 'image-detection'}">
+                             <lightning:layout multipleRows="true">
+                            <lightning:layoutItem padding="horizontal-medium" size="12">
+                                <c:EinsteinModelSelect dataType = 'image-detection' modelId="{!v.selectedModel}" dataset="{!v.dataset}" modelList="{!v.modelList}"/>
+                            </lightning:layoutItem>
+                            <lightning:layoutItem size="12">
+                             <c:EinsteinObjectDetection modelId="{!v.selectedModel}"/> 
+                                 </lightning:layoutItem>
+                            </lightning:layout>
+                       </aura:if>
   
                 </lightning:tab>
                   <lightning:tab>
                     <aura:set attribute="label">
                         Update 
                     </aura:set>
-                       
+                     
                     <c:EinsteinUpdateDataset dataset="{!v.dataset}" modelList="{!v.modelList}" iconName="{!v.iconName}"/> 
                       
                 </lightning:tab>

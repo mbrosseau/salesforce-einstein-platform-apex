@@ -63,6 +63,9 @@
         <members>EinsteinLanguageOutput</members>
         <members>EinsteinModelSelect</members>
         <members>EinsteinObjectDetection</members>
+        <members>EinsteinPlatformAdministration</members>
+        <members>EinsteinPlatformConfigureSetup</members>
+        <members>EinsteinPlatformValidation</members>
         <members>EinsteinPlatform_Card</members>
         <members>EinsteinPlayground</members>
         <members>EinsteinPlaygroundBase</members>
@@ -101,6 +104,8 @@
         <name>CustomApplication</name>
     </types>
     <types>
+        <members>Einstein_Settings__c.Access__c</members>
+        <members>Einstein_Settings__c.Authentication_Type__c</members>
         <members>Einstein_Settings__c.CacheName__c</members>
         <members>Einstein_Settings__c.CertName__c</members>
         <members>Einstein_Settings__c.Einstein_EMail__c</members>
@@ -111,7 +116,7 @@
         <name>CustomObject</name>
     </types>
     <types>
-        <members>Einstein_Usage</members>
+        <members>Einstein_Admin</members>
         <members>Playground</members>
         <name>CustomTab</name>
     </types>

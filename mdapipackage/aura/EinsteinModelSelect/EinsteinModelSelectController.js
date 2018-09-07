@@ -27,6 +27,11 @@
             component.set("v.modelId", models[0].id);
         }
         component.set("v.selectionModels", models);  */
+        var dataset= component.get("v.dataset");
+        if(dataset != null) {
+            component.set("v.selectedDatasetId", dataset.id);
+        }
+        
         var modelList= component.get("v.modelList");
         if(modelList != null && modelList.length > 0) {
             return;
@@ -47,6 +52,15 @@
         var datasetId = component.get("v.selectedDatasetId");
          var dataType = component.get("v.dataType");
 
+        if(isNaN(Number(datasetId))) {
+            console.log("Selected String " + datasetId);
+           component.set("v.modelId", datasetId);
+             component.set("v.prebuilt", true);
+            return;
+        }
+        
+        
+        
        helper.getModelsByDatasetId(component, datasetId, dataType);
         
     },

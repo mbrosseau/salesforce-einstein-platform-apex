@@ -29,7 +29,7 @@ public class Einstein_HttpBodyPartPrediction extends Einstein_HttpBodyPart {
             body += WriteBoundary();
             body += WriteBodyParameter('sampleId', sampleId);
         }
-        System.debug(data);
+    
                body += WriteBoundary();
         if (type==Types.BASE64) {
             body += WriteBodyParameter('sampleBase64Content', data);

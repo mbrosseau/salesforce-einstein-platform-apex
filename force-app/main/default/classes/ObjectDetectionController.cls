@@ -8,7 +8,7 @@ public class ObjectDetectionController {
                 throw new AuraHandledException(service.httpErrorMessage);
             }
        
-       System.debug(result);
+       
         return result;
     } 
     
@@ -17,7 +17,7 @@ public class ObjectDetectionController {
         
         System.debug('------ Storing Results ----------');
          System.debug('Record - ' + recordId);
-         System.debug(dataJson);
+       //  System.debug(dataJson);
    
         Schema.SObjectType token = recordId.getSObjectType();
         Schema.DescribeSObjectResult dr = token.getDescribe();
@@ -113,7 +113,7 @@ public class ObjectDetectionController {
     
       @AuraEnabled
     public static Einstein_PredictionResult  analyseImageUrl(String url, String modelName) {
-   			System.debug('analyseImageUrl: Model - ' + modelName + ' url - ' + url);
+   		//	System.debug('analyseImageUrl: Model - ' + modelName + ' url - ' + url);
       // System.debug('recId' + recId + ' :: fileName ' + fileName + ' :: base64Data :: ' + base64Data.length() + ' :: ContentType :: ' + contentType + ' :: modelName :: ' + modelName );
        //System.debug(base64Data.length());
     // System.debug('Model ' + modelName + ' url ' + url);
@@ -129,7 +129,7 @@ public class ObjectDetectionController {
         
         //ID attachementId = CreateAttachmentCtrl.receiveData(recId, fileName, base64Data, contentType);
         
-        System.debug(result);
+      //  System.debug(result);
         
        return result;
     }

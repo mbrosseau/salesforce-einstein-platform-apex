@@ -73,15 +73,19 @@ public class EinsteinLanguageMassUpdateController {
         return count;
     }
 
+    
+    
+    
   @AuraEnabled
-    public static String goClassify( String sourceName, String destinationName, String objectName, Integer batchSize, String modelId,  String overwriteValues, String latestId, String ignoreErrors) {
+    public static String goClassify( String sourceName, String destinationName, String objectName, Integer batchSize, String modelId, String dataType,
+                                    String overwriteValues, String latestId, String ignoreErrors) {
          
 
         System.debug('---- Started Classification ----');
          Boolean overwrite = Boolean.valueOf(overwriteValues);
         Boolean ignoreErrorVal = Boolean.valueOf(ignoreErrors);
         
-        System.debug(modelId + ' '  + latestId + ' ' + batchSize  + ' ' + overwrite  + ' ' + ignoreErrorVal);
+        System.debug(modelId + ' '  + latestId + ' ' + batchSize  + ' ' + dataType + ' ' + overwrite  + ' ' + ignoreErrorVal);
       //  System.debug( overwriteValues);
   
        Integer maxSize = Integer.valueOf(batchSize);
@@ -99,7 +103,12 @@ public class EinsteinLanguageMassUpdateController {
        List<SObject > shortList  = new List<SObject >();   
         
         Einstein_PredictionService service;
-        service = new Einstein_PredictionService(Einstein_PredictionService.Types.Intent);
+           if(dataType == 'text-intent') {
+               service = new Einstein_PredictionService(Einstein_PredictionService.Types.Intent);
+           } else if(dataType == 'image') {
+                service = new Einstein_PredictionService(Einstein_PredictionService.Types.Image);
+           }
+      
         
               for (Integer i = 0; i < dataList.size() && i < maxSize; i++) {
                   
@@ -114,11 +123,19 @@ public class EinsteinLanguageMassUpdateController {
                            
                        
                         Einstein_PredictionResult predictionList = null;
+                       
+                           
                        if(modelId == 'CommunitySentiment') {
                          	predictionList = service.predictSentiment(modelId, text, 2, null);
-                        } else {
+                        } else  if(dataType == 'text-intent') {
+                         
 							predictionList  = service.predictIntent(modelId, text, 2, null);
-                        }
+                        } else if(dataType == 'image') {
+                            predictionList  = service.predictImageUrl(modelId, text, 2, null);
+                       }
+                          
+                        System.debug(predictionList);  
+                           
                         Double topPred = 0;
                         String label = '';
                        
@@ -128,14 +145,16 @@ public class EinsteinLanguageMassUpdateController {
                         }
                                     
                         for(Einstein_Probability pred : predictionList.probabilities) {
-                           // System.debug(pred);
+                            System.debug(pred);
                             if(pred.probability > topPred) {
                                label = pred.label;
                                topPred = pred.probability;
                             }
                         }  
                        
-						//System.debug(label); 
+                    
+                           
+						System.debug(label); 
                         obj.put(destinationName, label);
                  
                         shortList.add(obj);
@@ -148,6 +167,7 @@ public class EinsteinLanguageMassUpdateController {
                     }
                 }
             System.debug('---- Saving List ' + shortList.size() + ' ----');
+           System.debug(shortList); 
         	update shortList; 
            
             return latestId;  

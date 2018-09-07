@@ -63,6 +63,9 @@ public class Einstein_PredictionService {
 */
     public Einstein_Dataset createDatasetFromUrlAsync(String url) {
         System.debug('Starting createDatasetFromUrlAsync call from URL ' + url + ' for type ' + typeString + '.');
+        
+         checkFullRights();
+        
         Einstein_HttpBodyPartDatasetUrl parts = new Einstein_HttpBodyPartDatasetUrl(url, typeString);
         Einstein_HttpClient client = new Einstein_HttpClient(this, '/datasets/upload', parts.build());
         client.isPost(true);
@@ -90,6 +93,9 @@ public class Einstein_PredictionService {
 */
     public Einstein_Dataset createDatasetFromUrlSync(String url) {
         System.debug('Starting createDatasetFromUrlSync call from URL ' + url + ' for type ' + typeString + '.');
+        
+         checkFullRights();
+        
         Einstein_HttpBodyPartDatasetUrl parts = new Einstein_HttpBodyPartDatasetUrl(url, typeString);
         Einstein_HttpClient client = new Einstein_HttpClient(this, '/datasets/upload/sync', parts.build());
         client.isPost(true);
@@ -201,6 +207,9 @@ public class Einstein_PredictionService {
 */
     public boolean deleteDataset(Long datasetId) {
         System.debug('Starting deleteDataset call');
+        
+         checkFullRights();
+        
         Einstein_HttpClient client = new Einstein_HttpClient(this, '/datasets/' + datasetId);
         client.isDelete(true);
         System.debug('Target URL is ' + client.getUrl());
@@ -232,6 +241,9 @@ public class Einstein_PredictionService {
 */
     public Einstein_Example createExample(Long datasetId, String name, Long labelId, Blob fileBlob) {
         System.debug('Starting createExample call from blob');
+        
+         checkFullRights();
+        
         Einstein_HttpBodyPartExample parts = new Einstein_HttpBodyPartExample(name, labelId, EncodingUtil.base64Encode(fileBlob));
         Einstein_HttpClient client = new Einstein_HttpClient(this, '/datasets/' + datasetId + '/examples', parts.build());
         System.debug('Target URL is ' + client.getUrl());
@@ -265,6 +277,9 @@ public class Einstein_PredictionService {
 */
     public Einstein_Example createExampleBase64(Long datasetId, String name, Long labelId, String base64) {
         System.debug('Starting createExample call from base64');
+        
+         checkFullRights();
+        
         Einstein_HttpBodyPartExample parts = new Einstein_HttpBodyPartExample(name, labelId,  base64);
         
         Einstein_HttpClient client = new Einstein_HttpClient(this, '/datasets/' + datasetId + '/examples', parts.build());
@@ -295,6 +310,9 @@ public class Einstein_PredictionService {
 */
     public Einstein_Dataset createExamplesFromUrl(Long datasetId, String url) {
         System.debug('Starting createExamplesFromUrl call from URL ' + url);
+        
+         checkFullRights();
+        
         Einstein_HttpBodyPartDatasetUrl parts = new Einstein_HttpBodyPartDatasetUrl(url, this.typeString);
         Einstein_HttpClient client = new Einstein_HttpClient(this, '/datasets/' + datasetId + '/upload', parts.build());
         client.isPut(true);
@@ -328,7 +346,10 @@ public class Einstein_PredictionService {
 */
     public Einstein_Example createFeedbackImageExample(String name, String expectedLabel, String modelId, String data ) {
         System.debug('Starting createFeedbackImageExample call from blob');
-       // Einstein_HttpBodyPartFeedbackExample parts = new Einstein_HttpBodyPartFeedbackExample(name, expectedLabel, modelId, EncodingUtil.base64Encode(fileBlob), Einstein_HttpBodyPartFeedbackExample.Types.BASE64);
+      
+         checkFullRights();
+        
+        // Einstein_HttpBodyPartFeedbackExample parts = new Einstein_HttpBodyPartFeedbackExample(name, expectedLabel, modelId, EncodingUtil.base64Encode(fileBlob), Einstein_HttpBodyPartFeedbackExample.Types.BASE64);
        Einstein_HttpBodyPartFeedbackExample parts = new Einstein_HttpBodyPartFeedbackExample(name, expectedLabel, modelId, data , Einstein_HttpBodyPartFeedbackExample.Types.URL);
 
         
@@ -364,6 +385,9 @@ public class Einstein_PredictionService {
 */
     public Einstein_Example createFeedbackLanguageExample(String expectedLabel, String modelId, String text) {
         System.debug('Starting createFeedbackLanguageExample call from text');
+        
+        checkFullRights();
+            
         Einstein_HttpBodyPartFeedbackExample parts = new Einstein_HttpBodyPartFeedbackExample('', expectedLabel, modelId, text, Einstein_HttpBodyPartFeedbackExample.Types.DOCUMENT);
         Einstein_HttpClient client = new Einstein_HttpClient(this, '/feedback', parts.build());
         System.debug('Target URL is ' + client.getUrl());
@@ -442,6 +466,9 @@ public class Einstein_PredictionService {
 */
     public Einstein_Model trainDataset(Long datasetId, String name, Integer epochs, Decimal learningRate, Einstein_TrainParams trainParams) {
         System.debug('Starting trainDataset call with name ' + name);
+        
+         checkFullRights();
+        
         Einstein_HttpBodyPartTraining parts = new Einstein_HttpBodyPartTraining(datasetId, name, epochs, learningRate, trainParams);
         Einstein_HttpClient client = new Einstein_HttpClient(this, '/train', parts.build());
         System.debug('Target URL is ' + client.getUrl());
@@ -474,6 +501,9 @@ public class Einstein_PredictionService {
 */
     public Einstein_Model retrainDataset(String modelId, Integer epochs, Decimal learningRate, Einstein_TrainParams trainParams) {
         System.debug('Starting retrainDataset call with name ' + modelId);
+        
+         checkFullRights();
+        
         Einstein_HttpBodyPartRetraining parts = new Einstein_HttpBodyPartRetraining(modelId, epochs, learningRate, trainParams);
         Einstein_HttpClient client = new Einstein_HttpClient(this, '/retrain', parts.build());
         System.debug('Target URL is ' + client.getUrl());
@@ -981,7 +1011,11 @@ public class Einstein_PredictionService {
         if (!Test.isRunningTest()) {
            
             if (settings.Einstein_EMail__c == null) {
-                throw new Einstein_ConfigurationException('Missing Einstein email setting. Check your Custom Settings.');
+                throw new Einstein_ConfigurationException('Missing Einstein email setting. Please check the configuration.');
+            }
+            
+            if (settings.CertName__c == null) {
+                throw new Einstein_ConfigurationException('Missing Einstein certficate / pem setting. Please check the configuration.');
             }
             
             
@@ -991,20 +1025,17 @@ public class Einstein_PredictionService {
             }
                 System.debug('Einstein Access Token Cache Miss');
             
-            String tokenFileName = 'einstein_platform';
+            String tokenFileName = settings.CertName__c;
          
-                if (settings.CertName__c == null) {
+                if (settings.Authentication_Type__c  == 'pem file') {
                     
-                    
-                   
-                     
-                    ContentVersion base64Content;
+                   ContentVersion base64Content;
                     // Try to retrieve certificate
                     
                     try {
                         base64Content = [SELECT Title, VersionData FROM ContentVersion where Title=: tokenFileName AND IsLatest=true order by CreatedDate DESC LIMIT 1];
                     } catch (QueryException e) {
-                        throw new Einstein_ConfigurationException('Could not retrieve the Einstein Platform certificate file: einstein_platform', e);
+                        throw new Einstein_ConfigurationException('Could not retrieve the Einstein Platform certificate file: ' + tokenFileName , e);
                     }
                     
                     String keyContents = base64Content.VersionData.tostring();
@@ -1042,6 +1073,9 @@ public class Einstein_PredictionService {
                 cachPartition = 'local.' + settings.CacheName__c;
                 
                 Cache.OrgPartition orgPart = Cache.Org.getPartition(cachPartition);
+                
+                System.debug('Storing values in cache');
+
                 orgPart.put('accessToken', accessToken);
                 orgPart.put('tokenTime', tokenTime);
                 System.debug('Storing Email ' +  settings.Einstein_EMail__c);
@@ -1082,19 +1116,27 @@ public class Einstein_PredictionService {
         
         cachPartition = 'local.' + settings.CacheName__c;
         
-
-        String email = (String)  Cache.Org.get(cachPartition + '.' + 'email');
+		Cache.OrgPartition orgPart = Cache.Org.getPartition(cachPartition);
+  
+       // String email = (String)  Cache.Org.get(cachPartition + '.' + 'email');
+        String email = (String)orgPart.get('email');
+        
+       
         if(email != settings.Einstein_EMail__c) {
               System.debug('Einstein Platform email changed - ' + email + ' - ' +  settings.Einstein_EMail__c);
             return null;
         } 
         
-     
+      
         
-         accessToken = (String)  Cache.Org.get(cachPartition + '.' + 'accessToken');
+       //  accessToken = (String)  Cache.Org.get(cachPartition + '.' + 'accessToken');
+         accessToken = (String)orgPart.get('accessToken');
+         
+        
         if(accessToken != null) {
             System.debug('Einstein Access Token Cache Hit');
-            DateTime tokenTime = (DateTime) Cache.Org.get('tokenTime');
+         
+           DateTime tokenTime = (DateTime)orgPart.get('tokenTime');
             DateTime tokenTimeout = tokenTime.addHours(tokenTimeoutHrs);
             if(tokenTimeout > DateTime.Now()) {   
                 System.debug(accessToken);      
@@ -1106,5 +1148,15 @@ public class Einstein_PredictionService {
         }
         return null;
     }
+    
+     public static Boolean checkFullRights() {
+         Einstein_Settings__c settings = Einstein_Settings__c.getOrgDefaults();
+         if(settings.Access__c != 'Full') {
+             Exception e = new Einstein_ConfigurationException('User does not have permission to perform action.');
+             throw e;
+         }
+         return true;
+     }
+    
     
 }

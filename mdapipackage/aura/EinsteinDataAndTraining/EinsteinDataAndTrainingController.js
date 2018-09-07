@@ -2,6 +2,24 @@
   onLoadDatasets: function(component, event, helper) {
    
     	helper.onLoadDatasets(component);
+      
+      
+      let dataType = component.get("v.dataType");
+        if (dataType==='image'){
+          component.set("v.iconName", "standard:entitlement_template");
+             component.set("v.title", "Image");
+        } else if (dataType === 'text-intent'){
+          component.set("v.iconName", "standard:entitlement");
+             component.set("v.title", "Intent");
+        } else if (dataType === 'text-sentiment') {
+          component.set("v.iconName", "standard:endorsement");
+             component.set("v.title", "Sentiment");
+        } else if (dataType === 'image-detection') {
+          component.set("v.iconName", "standard:search");
+             component.set("v.title", "Object Detection");
+        } else {
+          component.set("v.iconName", "standard:survey");
+        }
   },
 
      getSelectedRow: function(component, event, helper) {
