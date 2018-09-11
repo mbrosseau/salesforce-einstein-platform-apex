@@ -1,6 +1,8 @@
 ({
 	doInit : function(component, event, helper) {
         helper.getEinsteinSettings(component);
+        helper.getPemFile(component);
+         helper.getUserId(component);
         
         
       
@@ -53,6 +55,50 @@
    		});
 
     	$A.enqueueAction(action);
+     },
+     handleUploadFinished : function(component, event, helper) {
+
+         var action = component.get("c.updateFile");
+ 		
+               
+          var uploadedFiles = event.getParam("files");
+        var contentId = '';
+        console.log("upload finished " + uploadedFiles.length);
+        
+        
+        for(var i=0; i<uploadedFiles.length; i++) {
+           console.log( uploadedFiles[i].name + ' - ' + uploadedFiles[i].documentId );
+           contentId =  uploadedFiles[i].documentId;
+        }
+           component.set("v.pemId", contentId);
+
+        
+         
+         action.setParams({
+      		documentId: contentId
+    	});
+         
+    	action.setCallback(this, function(a) {
+            if (a.getState() === "SUCCESS") {
+              
+                
+                var certName =  a.getReturnValue();
+                
+                 console.log("Got file title " + certName); 
+               	var settings  = component.get("v.settings");
+                settings.CertName__c = certName;
+                component.set("v.settings", settings);
+                
+             	return;
+            } else if (a.getState() === "ERROR") {                
+    			$A.log("Errors", a.getError());
+                helper.handleErrors(a.getError());
+            }
+   		});
+
+    	$A.enqueueAction(action);
+
+                 
      }
     
 })

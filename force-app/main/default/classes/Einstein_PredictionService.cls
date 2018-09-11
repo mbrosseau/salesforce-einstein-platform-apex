@@ -999,6 +999,10 @@ public class Einstein_PredictionService {
         return bearerToken;
     }
     
+    public static void registerCertificate(String certificateName){
+        
+    }
+    
     public static String getAccessToken() {
         // Try to retrieve email setting
         Einstein_Settings__c settings = Einstein_Settings__c.getOrgDefaults();
@@ -1083,15 +1087,12 @@ public class Einstein_PredictionService {
                
             }
             
-            System.debug(accessToken);
-            
-            
         }
         
         return accessToken;
     }
     
-     private static boolean  checkTokenFileCount( String tokenFileName ) {
+     private static boolean checkTokenFileCount( String tokenFileName ) {
         integer count = [SELECT count() FROM ContentVersion where Title=: tokenFileName AND IsLatest=true ];
         
          

@@ -1,5 +1,8 @@
 <aura:component controller="Einstein_PlaygroundController" implements="flexipage:availableForAllPageTypes,lightning:isUrlAddressable" access="global" >
     <aura:attribute name="settings" type="Einstein_Settings__c" />
+     <aura:attribute name="pemId" type="String" />
+     <aura:attribute name="userId" type="String" />
+    
      <aura:attribute name="enableCache" type="Boolean" default="false" />
       <aura:attribute name="showVerify" type="Boolean" default="false" />
      <aura:attribute name="connectionStatus" type="Object"  />
@@ -7,11 +10,9 @@
     
     
     <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
-    
-
-    
+   
     <div>
-    <lightning:card title="Einstein Platform Services Playground Configuration" class="slds-card_border" >
+    <lightning:card title="Einstein Platform Services Playground Configuration" iconName="standard:apps_admin" class="slds-card_border" >
         <lightning:layout multipleRows="true">
             <lightning:layoutItem size="12"  padding="horizontal-small">
                 
@@ -52,24 +53,32 @@
                                  <lightning:layoutItem size="12"  padding="around-small">           
                         <aura:if isTrue="{!v.settings.Authentication_Type__c == 'pem file'}">
                              <lightning:layout multipleRows="true">
-                                 <lightning:layoutItem size="12"  padding="around-small">   
-                        	<lightning:fileCard fileId="0696A000001OTuYQAW"/>
-                            <lightning:fileUpload  name="fileUploader"   label= "Upload a new file" multiple="false" accept="{!v.accept}" recordId="abcd"
+                                 <lightning:layoutItem size="12"  padding="around-small"> 
+                                    
+                            <aura:if isTrue="{!v.pemId != null}">
+                        		<lightning:fileCard fileId="{!v.pemId}"/>
+                             </aura:if>
+                            <lightning:fileUpload  name="fileUploader"   label= "Upload a new file" multiple="false" accept="{!v.accept}" recordId="{!v.userId}"
                            onuploadfinished="{! c.handleUploadFinished }"/>
                                  </lightning:layoutItem>
                                     <lightning:layoutItem size="8"  padding="">
-                                   <!--     <lightning:layout multipleRows="true">
+                                     <!--  <lightning:layout multipleRows="true">
                                               <lightning:layoutItem size="12"  padding="around-small">
                                        For broader deployments, it is recommended that a certificate be registered with Einstein Platform Services. 
                                                   Go to <a href="/lightning/setup/CertificatesAndKeysManagement/home">Certificate and Key Management</a> to create a new certificate.
                                             </lightning:layoutItem>
-                                             <lightning:layoutItem size="6"  padding="around-small">
-                                          <lightning:input name="cert" label="Certificate Name" value="{!v.settings.CertName}" />
-                                                 
+                                             <lightning:layoutItem size="12"  padding="horizontal-small">
+                                                 <table><tr><td>
+                                                        <lightning:input name="cert" label="Certificate Name" value="{!v.settings.CertName}" />
+
+                                                     </td><td class="bottom">
+                                                       <lightning:button label="Link Certificate"  onclick="{!c.onCreateCert}"/>
+                                                     </td>
+                                                     </tr>
+                                                 </table>
+                                                                                        
                                             </lightning:layoutItem>
-                                             <lightning:layoutItem size="6"  padding="around-small">
-                                                 <lightning:button label="Link Certificate" onclick="{!c.onCreateCert}"/>
-                                            </lightning:layoutItem>
+                                             
                                         </lightning:layout> -->
                                  </lightning:layoutItem>
 						

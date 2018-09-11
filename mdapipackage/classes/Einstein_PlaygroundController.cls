@@ -25,9 +25,7 @@ public class Einstein_PlaygroundController {
     public static id getMyUserId(){
         return UserInfo.getUserId();
     }
-    
-   
-
+  
     @AuraEnabled
     public static String getModelMetrics(string modelId, string dataType){
         try {
@@ -74,9 +72,37 @@ public class Einstein_PlaygroundController {
     }
     @AuraEnabled
     public static void saveSettings(Einstein_Settings__c settings){
-        update settings;
+        
+        if(settings.id == null) {
+            Einstein_Settings__c existingSettings = Einstein_Settings__c.getOrgDefaults();
+			settings.id = existingSettings.id;
+        }
+        
+        if(settings.id == null)  {
+              insert settings;
+        } else {
+              update settings;
+        }  
     }
     
+       @AuraEnabled
+    public static String updateFile(String documentId){
+        String fileName = null;
+       
+         ContentDocument base64Content;
+         base64Content = [SELECT id, Title FROM ContentDocument  where id=: documentId LIMIT 1];
+        
+        fileName = base64Content.Title;
+      
+        return fileName;
+    }
+    
+         @AuraEnabled
+    public static void linkCertficate(String certName){
+       
+      
+        
+    }
     
    @AuraEnabled
     public static Map<String, String> validateSetup() {
@@ -125,14 +151,16 @@ public class Einstein_PlaygroundController {
 
  		String tokenFileName = settings.CertName__c;
 	         
-                if (settings.Authentication_Type__c  == 'pem file') {
-                    
-                   ContentVersion base64Content;
+                if (settings.Authentication_Type__c  == 'pem file') {       
+                   List<ContentDocument> base64Content;
                     // Try to retrieve certificate
                     
                     try {
-                        base64Content = [SELECT id FROM ContentVersion where Title=: tokenFileName AND IsLatest=true order by CreatedDate DESC LIMIT 1];
-                        return base64Content.id;
+                        base64Content = [SELECT id FROM ContentDocument  where Title=: tokenFileName order by CreatedDate DESC LIMIT 1];
+                        if(base64Content.size() > 0) {
+                             return base64Content.get(0).id;
+                        }
+                       return null;
                     } catch (QueryException e) {
                         throw new Einstein_ConfigurationException('Could not retrieve the Einstein Platform certificate file: ' + tokenFileName , e);
                     }  

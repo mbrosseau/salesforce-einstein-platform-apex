@@ -8,13 +8,46 @@
             if (a.getState() === "SUCCESS") {
              	var settings =  a.getReturnValue();
                 component.set("v.settings",settings);
-                console.log(settings);
+               
                 if(settings.CacheName__c != null) {
                       component.set("v.enableCache",true);
                 }
                 
             } else if (a.getState() === "ERROR") {                
-    			$A.log("Errors", a.getError());
+    			
+                helper.handleErrors(a.getError());
+            }
+   		});
+
+    	$A.enqueueAction(action);
+     },
+    getPemFile : function(component) {
+    	var action = component.get("c.getPemFileId");
+ 		var helper = this;
+         
+    	action.setCallback(this, function(a) {
+            if (a.getState() === "SUCCESS") {
+             	var pemId =  a.getReturnValue();
+                component.set("v.pemId",pemId);
+              
+
+            } else if (a.getState() === "ERROR") {                
+    			
+                helper.handleErrors(a.getError());
+            }
+   		});
+
+    	$A.enqueueAction(action);
+     },
+        getUserId : function(component) {
+    	var action = component.get("c.getMyUserId");
+ 		var helper = this;
+         
+    	action.setCallback(this, function(a) {
+            if (a.getState() === "SUCCESS") {
+             	var userId =  a.getReturnValue();
+                component.set("v.userId",userId);
+            } else if (a.getState() === "ERROR") {                
                 helper.handleErrors(a.getError());
             }
    		});
@@ -22,6 +55,7 @@
     	$A.enqueueAction(action);
      },
 	 handleErrors : function(errors) {
+         	$A.log("Errors",errors);
         // Configure error toast
         let toastParams = {
             title: "Error",
