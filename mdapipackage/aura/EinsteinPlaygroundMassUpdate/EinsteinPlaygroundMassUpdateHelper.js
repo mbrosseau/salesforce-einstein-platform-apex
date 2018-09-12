@@ -19,6 +19,7 @@
          var sourceName = component.get("v.selectedSourceField");
          var destinationName = component.get("v.selectedDestinationField");
          var objectName = component.get("v.selectedObject");
+         var dataType = component.get("v.dataType");
        
          var overwrite =  component.get("v.overwriteValues"); 
          var ignoreErrors = component.get("v.ignoreErrors"); 
@@ -37,7 +38,8 @@
             batchSize : BATCH_SIZE,
              overwriteValues: overwrite,
              latestId: lastId,
-             ignoreErrors, ignoreErrors
+             ignoreErrors, ignoreErrors,
+             dataType: dataType
         });
   
     	action.setCallback(this, function(a) {
